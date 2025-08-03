@@ -1,0 +1,28 @@
+table {
+    border-spacing: 5px;
+    margin-left: 20px;
+  }
+
+  td {
+    text-align: left;
+  }
+
+    .gap-10 { 
+        width:100%; 
+        height:15px; 
+    } 
+
+    .gap-20 { 
+        width:100%; 
+        height:20px; 
+    } 
+
+  h1 {text-align: left;}
+
+  .center {
+    text-align: center;    
+  }
+
+  .left {
+    text-align: left;
+  }
