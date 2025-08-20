@@ -67,6 +67,7 @@ export default function ApplicationBar(props: Props) {
 
   const handleOnCloseLoginDlg = () => {
     console.log('handleOnCloseLoginDlg');
+    setShowLogin(false);
   };
 
   return (
@@ -154,7 +155,7 @@ export default function ApplicationBar(props: Props) {
         </Typography>
       </Box>      
     </Box>
-    <LoginDlg open={showLogin} onClose={handleOnCloseLoginDlg}/>
+    <LoginDlg open={showLogin} onSubmitLogin={handleOnCloseLoginDlg}/>
     </div>
   );
 }

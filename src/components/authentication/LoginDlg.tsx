@@ -1,21 +1,25 @@
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 export interface LoginDlgProps {
   open: boolean;
-  onClose: () => void;
+  onSubmitLogin: () => void;
 }
 
 export default function LoginDlg(props: LoginDlgProps) {
-  const { onClose, open } = props;
+  const { onSubmitLogin, open } = props;
 
-  const handleClose = () => {
-    onClose();
-  };
+  const handleSubmit = async() => {
+    onSubmitLogin();
+  }
 
   return (
-    <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Set backup account</DialogTitle>      
+    <Dialog open={open}>
+      <DialogTitle>Login</DialogTitle>
+      <Button onClick={handleSubmit}>
+        Submit                    
+      </Button>
     </Dialog>
   );
 }
