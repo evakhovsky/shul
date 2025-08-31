@@ -15,6 +15,16 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginComponent from './authentication/Login';
 import LoginDlg from './authentication/LoginDlg';
+import MenuList from '@mui/material/MenuList';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import { styled, alpha } from '@mui/material/styles';
+import Menu, { MenuProps } from '@mui/material/Menu';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import LoginIcon from '@mui/icons-material/Login';
+
 
 interface Props {
   /**
@@ -31,20 +41,86 @@ export default function ApplicationBar(props: Props) {
   
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color: 'rgb(55, 65, 81)',
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0',
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+        ...theme.applyStyles('dark', {
+          color: 'inherit',
+        }),
+      },
+      '&:active': {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity,
+        ),
+      },
+    },
+    ...theme.applyStyles('dark', {
+      color: theme.palette.grey[300],
+    }),
+  },
+}));
+
 
   const handleDrawerToggle = () => {
+    console.log('handleDrawerToggle');
     setMobileOpen((prevState) => !prevState);
+  };
+
+  const handleDrawMenu = () => {
+    console.log('handleDrawerToggle');
+    return (
+      <Paper sx={{ width: 320 }}>
+    <MenuList dense>
+        <MenuItem>
+          <ListItemText inset>Single</ListItemText>
+        </MenuItem>
+    </MenuList>
+    </Paper>
+    );
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = (menuClicked: string) => {
+    setAnchorEl(null);
+    console.log(menuClicked);
   };
 
   const handleLogin = () => {
     console.log('handleLogin');
+    setAnchorEl(null);
     setShowLogin(true);
-    /*if(window !== undefined){       
-      window.helloComponent.openModal()
-    }
-    else{
-      console.log('window undefined');
-    }*/
   }
 
   const drawer = (
@@ -94,10 +170,41 @@ export default function ApplicationBar(props: Props) {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
+              <Button key={item} sx={{ color: '#fff' }} onClick={handleClick}>
+                {item}                
               </Button>
             ))}
+
+<StyledMenu
+        id="demo-customized-menu"
+        slotProps={{
+          list: {
+            'aria-labelledby': 'demo-customized-button',
+          },
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleLogin} disableRipple>
+          <LoginIcon />
+          Login
+        </MenuItem>
+        <MenuItem onClick={() => handleClose("copy")} disableRipple>
+          <FileCopyIcon />
+          Duplicate
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem onClick={() => handleClose("archive")} disableRipple>
+          <ArchiveIcon />
+          Archive
+        </MenuItem>
+        <MenuItem onClick={() => handleClose("horizon")} disableRipple>
+          <MoreHorizIcon />
+          More
+        </MenuItem>
+      </StyledMenu>
+
           </Box>
         </Toolbar>
       </AppBar>
@@ -120,38 +227,7 @@ export default function ApplicationBar(props: Props) {
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
         <Typography>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique unde
-          fugit veniam eius, perspiciatis sunt? Corporis qui ducimus quibusdam,
-          aliquam dolore excepturi quae. Distinctio enim at eligendi perferendis in
-          cum quibusdam sed quae, accusantium et aperiam? Quod itaque exercitationem,
-          at ab sequi qui modi delectus quia corrupti alias distinctio nostrum.
-          Minima ex dolor modi inventore sapiente necessitatibus aliquam fuga et. Sed
-          numquam quibusdam at officia sapiente porro maxime corrupti perspiciatis
-          asperiores, exercitationem eius nostrum consequuntur iure aliquam itaque,
-          assumenda et! Quibusdam temporibus beatae doloremque voluptatum doloribus
-          soluta accusamus porro reprehenderit eos inventore facere, fugit, molestiae
-          ab officiis illo voluptates recusandae. Vel dolor nobis eius, ratione atque
-          soluta, aliquam fugit qui iste architecto perspiciatis. Nobis, voluptatem!
-          Cumque, eligendi unde aliquid minus quis sit debitis obcaecati error,
-          delectus quo eius exercitationem tempore. Delectus sapiente, provident
-          corporis dolorum quibusdam aut beatae repellendus est labore quisquam
-          praesentium repudiandae non vel laboriosam quo ab perferendis velit ipsa
-          deleniti modi! Ipsam, illo quod. Nesciunt commodi nihil corrupti cum non
-          fugiat praesentium doloremque architecto laborum aliquid. Quae, maxime
-          recusandae? Eveniet dolore molestiae dicta blanditiis est expedita eius
-          debitis cupiditate porro sed aspernatur quidem, repellat nihil quasi
-          praesentium quia eos, quibusdam provident. Incidunt tempore vel placeat
-          voluptate iure labore, repellendus beatae quia unde est aliquid dolor
-          molestias libero. Reiciendis similique exercitationem consequatur, nobis
-          placeat illo laudantium! Enim perferendis nulla soluta magni error,
-          provident repellat similique cupiditate ipsam, et tempore cumque quod! Qui,
-          iure suscipit tempora unde rerum autem saepe nisi vel cupiditate iusto.
-          Illum, corrupti? Fugiat quidem accusantium nulla. Aliquid inventore commodi
-          reprehenderit rerum reiciendis! Quidem alias repudiandae eaque eveniet
-          cumque nihil aliquam in expedita, impedit quas ipsum nesciunt ipsa ullam
-          consequuntur dignissimos numquam at nisi porro a, quaerat rem repellendus.
-          Voluptates perspiciatis, in pariatur impedit, nam facilis libero dolorem
-          dolores sunt inventore perferendis, aut sapiente modi nesciunt.
+          Lorem 
         </Typography>
       </Box>      
     </Box>
