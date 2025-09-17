@@ -35,7 +35,6 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Contact'];
 
 export default function ApplicationBar(props: Props) {
   
@@ -90,23 +89,13 @@ export default function ApplicationBar(props: Props) {
   },
 }));
 
-
   const handleDrawerToggle = () => {
     console.log('handleDrawerToggle');
     setMobileOpen((prevState) => !prevState);
   };
 
-  const handleDrawMenu = () => {
-    console.log('handleDrawerToggle');
-    return (
-      <Paper sx={{ width: 320 }}>
-    <MenuList dense>
-        <MenuItem>
-          <ListItemText inset>Single</ListItemText>
-        </MenuItem>
-    </MenuList>
-    </Paper>
-    );
+  const handleLoginDesktop = (event: React.MouseEvent<HTMLElement>) => {
+    handleLogin();
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -123,6 +112,22 @@ export default function ApplicationBar(props: Props) {
     setShowLogin(true);
   }
 
+  const renderMobileMenuListItem = (title: string, onclick: () => void) => {
+    return (<ListItem key={title} disablePadding>
+          <ListItemButton sx={{ textAlign: 'center' }}>
+            <ListItemText primary={title} onClick={onclick}/>
+          </ListItemButton>
+        </ListItem>    
+    );
+  }
+
+  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLElement>) => void) => {
+    return (<Button key={title} sx={{ color: '#fff' }} onClick={onclick}>
+              {title}
+            </Button>
+    );
+  }  
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
@@ -130,20 +135,19 @@ export default function ApplicationBar(props: Props) {
       </Typography>
       <Divider />
       <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} onClick={handleLogin}/>
-            </ListItemButton>
-          </ListItem>
-        ))}
+          {renderMobileMenuListItem("Home", ()=>{})}
+          {renderMobileMenuListItem("Schedule", ()=>{})}
+          {renderMobileMenuListItem("Donate", ()=>{})}
+          {renderMobileMenuListItem("Post", ()=>{})}
+          {renderMobileMenuListItem("Login", handleLogin)}
+          {renderMobileMenuListItem("Help", ()=>{})}
       </List>
     </Box>
   );
 
   const handleOnCloseLoginDlg = () => {
     console.log('handleOnCloseLoginDlg');
-    setShowLogin(false);
+    setShowLogin(false);    
   };
 
   return (
@@ -169,42 +173,41 @@ export default function ApplicationBar(props: Props) {
             MUI
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }} onClick={handleClick}>
-                {item}                
-              </Button>
-            ))}
-
-<StyledMenu
-        id="demo-customized-menu"
-        slotProps={{
-          list: {
-            'aria-labelledby': 'demo-customized-button',
-          },
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleLogin} disableRipple>
-          <LoginIcon />
-          Login
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("copy")} disableRipple>
-          <FileCopyIcon />
-          Duplicate
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={() => handleClose("archive")} disableRipple>
+            <StyledMenu
+              id="demo-customized-menu"
+              slotProps={{
+              list: {
+                'aria-labelledby': 'demo-customized-button',
+              },
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+          <MenuItem onClick={handleLogin} disableRipple>
+            <LoginIcon />
+            Login
+          </MenuItem>
+          <MenuItem onClick={() => handleClose("copy")} disableRipple>
+            <FileCopyIcon />
+            Duplicate
+          </MenuItem>
+          <Divider sx={{ my: 0.5 }} />
+          <MenuItem onClick={() => handleClose("archive")} disableRipple>
           <ArchiveIcon />
-          Archive
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("horizon")} disableRipple>
-          <MoreHorizIcon />
-          More
-        </MenuItem>
-      </StyledMenu>
-
+            Archive
+          </MenuItem>
+          <MenuItem onClick={() => handleClose("horizon")} disableRipple>
+            <MoreHorizIcon />
+            More
+          </MenuItem>
+        </StyledMenu>
+            {renderDesktopMenuButton("Home", () => {})}
+            {renderDesktopMenuButton("Schedule", () => {})}
+            {renderDesktopMenuButton("Donate", () => {})}
+            {renderDesktopMenuButton("Post", handleClick)}
+            {renderDesktopMenuButton("Login", handleLoginDesktop)}
+            {renderDesktopMenuButton("Help", () => {})}
           </Box>
         </Toolbar>
       </AppBar>
@@ -231,7 +234,7 @@ export default function ApplicationBar(props: Props) {
         </Typography>
       </Box>      
     </Box>
-    <LoginDlg open={showLogin} onSubmitLogin={handleOnCloseLoginDlg}/>
+    <LoginDlg open={showLogin} onClose={handleOnCloseLoginDlg}/>
     </div>
   );
 }
