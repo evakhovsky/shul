@@ -6,15 +6,17 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import authenticationService from '../shared/services/authentication.service';
+import { authenticationService } from '../shared/services/Authenticationservice';
+import { IUserLogin } from '../shared/services/IAuthenticationservice';
 
 export interface LoginDlgProps {
   open: boolean;
   onClose: () => void;
+  onLoginResult: (result: boolean, name: string) => void;
 }
 
 export default function LoginDlg(props: LoginDlgProps) {
-  const {open, onClose } = props;
+  const {open, onClose, onLoginResult} = props;
   const [isUserIDValid, setIsUserIDValid] = React.useState(false);
   const [isPasswordValid, setPasswordValid] = React.useState(false);
   const [userId, setUserId] = React.useState("");
@@ -24,16 +26,28 @@ export default function LoginDlg(props: LoginDlgProps) {
     
   const onSubmit = async() => {
     setIsSubmitting(true);
-    await authenticationService.login(userId, password);
+
+    let result: IUserLogin;
+
+    result  = await authenticationService.login(userId, password);
+    console.log('result:');
+    console.log(result);
+
+     if(result && result !== undefined && result !== null){
+      console.log(result.firstName);
+    }
+
     var token = localStorage.getItem('token');
     if(token) {
         onClose();
         setIsSubmitting(false);
+        onLoginResult(true, result.firstName);
         return;
     }
 
     setIsSubmitting(false);
     setHasErrors(true);
+    onLoginResult(false, '');
   }
 
   const renderUserIdLabel = () => {

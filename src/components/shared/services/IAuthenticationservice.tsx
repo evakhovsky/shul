@@ -1,3 +1,5 @@
+import { JwtPayload } from 'jwt-decode';
+
 export interface IUserLogin {
     status: boolean;
     token: string;
@@ -9,7 +11,20 @@ export interface IUserLogin {
     contactId: string;
 }
 
+export interface IToken {
+    ContactID : string;
+    Email : string;
+    FirstName : string;
+    Roles : string;
+    UserID : string;
+    exp : number;
+    iat : number;
+    nbf : number;
+    role : string;
+}
+
 export interface IAuthenticationService {
-  login(username: string, password: string ): Promise<IUserLogin>;
+    login(username: string, password: string ): Promise<IUserLogin>;
+    isUserLoggedIn() : boolean;
 }
 

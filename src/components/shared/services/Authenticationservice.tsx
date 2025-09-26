@@ -1,6 +1,6 @@
 import helperUtil from 'util'
 import { jwtDecode } from 'jwt-decode';
-import { IAuthenticationService, IUserLogin } from './IAuthenticationservice';
+import { IAuthenticationService, IUserLogin, IToken } from './IAuthenticationservice';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const SHUL = process.env.REACT_APP_SHUL;
@@ -24,8 +24,11 @@ class AuthenticationService implements IAuthenticationService {
               }
     
             const user = jwtDecode(data.token); // decode your token here
+            console.log('user');
             console.log(user);
+
             localStorage.setItem('token', data.token);
+
             return data;
           }).catch(function(error) {
               console.log(error);
@@ -33,6 +36,33 @@ class AuthenticationService implements IAuthenticationService {
 
     return response;
   }
+
+    public isUserLoggedIn = () : boolean  => {
+        var token = localStorage.getItem('token');
+    
+        if (!token) {
+            return false;
+        }
+
+        return !this.isExpired();
+    }
+
+    private isExpired = () : boolean  => {
+        var token = localStorage.getItem('token');
+        if (!token) {
+            return true;
+        }
+
+        let resultToken : IToken = jwtDecode<IToken>(token);
+        
+        if (!resultToken.exp) {
+            console.log("something is wrong with the token");
+            return true;
+        }
+
+        console.log(resultToken.FirstName);        
+        return Date.now() > resultToken.exp  * 1000;
+    };
 }
 
 export const authenticationService = new AuthenticationService();

@@ -13,7 +13,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import LoginComponent from './authentication/Login';
 import LoginDlg from './authentication/LoginDlg';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,7 +23,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LoginIcon from '@mui/icons-material/Login';
-
+import { authenticationService } from '../components/shared/services/Authenticationservice';
 
 interface Props {
   /**
@@ -41,6 +40,7 @@ export default function ApplicationBar(props: Props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [loginName, setLoginName] = React.useState('');
   const open = Boolean(anchorEl);
 
   const StyledMenu = styled((props: MenuProps) => (
@@ -126,7 +126,25 @@ export default function ApplicationBar(props: Props) {
               {title}
             </Button>
     );
-  }  
+  }
+
+  const isUserLoggedIn = (): boolean => {
+    return authenticationService.isUserLoggedIn();
+  }
+
+  const renderLoginMenuButton = () => {
+    if(!isUserLoggedIn()){
+      return (<Button key='Login' sx={{ color: '#fff' }} onClick={handleLoginDesktop}>
+              Login
+            </Button>
+      );
+    }
+    
+    return (<Button key='Login' sx={{ color: '#fff' }} onClick={handleLoginDesktop}>
+              {'Logout ' + loginName}
+            </Button>
+      );
+  } 
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -150,6 +168,10 @@ export default function ApplicationBar(props: Props) {
     setShowLogin(false);    
   };
 
+  const handleOnLoginResult = (result: boolean, name: string) => {
+    setLoginName(name);
+  }
+  
   return (
     <div>
     <Box sx={{ display: 'flex' }}>
@@ -206,7 +228,7 @@ export default function ApplicationBar(props: Props) {
             {renderDesktopMenuButton("Schedule", () => {})}
             {renderDesktopMenuButton("Donate", () => {})}
             {renderDesktopMenuButton("Post", handleClick)}
-            {renderDesktopMenuButton("Login", handleLoginDesktop)}
+            {renderLoginMenuButton()}
             {renderDesktopMenuButton("Help", () => {})}
           </Box>
         </Toolbar>
@@ -234,7 +256,9 @@ export default function ApplicationBar(props: Props) {
         </Typography>
       </Box>      
     </Box>
-    <LoginDlg open={showLogin} onClose={handleOnCloseLoginDlg}/>
+    <LoginDlg open={showLogin} 
+              onClose={handleOnCloseLoginDlg}
+              onLoginResult={handleOnLoginResult}/>
     </div>
   );
 }
