@@ -11,18 +11,18 @@ import { IUserLogin } from '../shared/services/IAuthenticationservice';
 
 export interface LoginDlgProps {
   open: boolean;
-  onClose: () => void;
-  onLoginResult: (result: boolean, name: string) => void;
+  onClose: () => void;  
 }
 
 export default function LoginDlg(props: LoginDlgProps) {
-  const {open, onClose, onLoginResult} = props;
+  const {open, onClose} = props;
   const [isUserIDValid, setIsUserIDValid] = React.useState(false);
   const [isPasswordValid, setPasswordValid] = React.useState(false);
   const [userId, setUserId] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [hasErrors, setHasErrors] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [specificError, setSpecificError] = React.useState('');
     
   const onSubmit = async() => {
     setIsSubmitting(true);
@@ -30,8 +30,12 @@ export default function LoginDlg(props: LoginDlgProps) {
     let result: IUserLogin;
 
     result  = await authenticationService.login(userId, password);
-    console.log('result:');
     console.log(result);
+
+    if(!result || result === null){
+      console.log('null result from login');
+      return;
+    }
 
      if(result && result !== undefined && result !== null){
       console.log(result.firstName);
@@ -41,13 +45,19 @@ export default function LoginDlg(props: LoginDlgProps) {
     if(token) {
         onClose();
         setIsSubmitting(false);
-        onLoginResult(true, result.firstName);
         return;
     }
 
+    if(result.userExists && !result.correctPassword){
+      setSpecificError('User exists, but password is wrong');
+    }
+
+    if(result.userExists && result.correctPassword && !result.isEmailConfirmed){
+      setSpecificError('The email has not been confirmed');
+    }
+
     setIsSubmitting(false);
-    setHasErrors(true);
-    onLoginResult(false, '');
+    setHasErrors(true);    
   }
 
   const renderUserIdLabel = () => {
@@ -110,8 +120,13 @@ export default function LoginDlg(props: LoginDlgProps) {
   }
 
   const renderError = () => {
-    if(hasErrors)
-        return <div><label style={{color: "red", marginTop: "20px", marginLeft: "15px"}}><b>Authentication error</b></label></div>;
+    if(hasErrors){
+        let specificErrorText : string = '';
+        if(specificError.length > 0){
+          specificErrorText = ' (' + specificError + ')';
+        }
+        return <div><label style={{color: "red", marginTop: "20px", marginLeft: "15px"}}><b>Authentication error{specificErrorText}</b></label></div>;
+    }
   }
 
   return (

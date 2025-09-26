@@ -1,4 +1,3 @@
-import helperUtil from 'util'
 import { jwtDecode } from 'jwt-decode';
 import { IAuthenticationService, IUserLogin, IToken } from './IAuthenticationservice';
 
@@ -20,7 +19,7 @@ class AuthenticationService implements IAuthenticationService {
               console.log(data);
               if(!data.status || !data.token)
               {                
-                return null;
+                return data;
               }
     
             const user = jwtDecode(data.token); // decode your token here
@@ -62,7 +61,23 @@ class AuthenticationService implements IAuthenticationService {
 
         console.log(resultToken.FirstName);        
         return Date.now() > resultToken.exp  * 1000;
-    };
+    }
+
+    public getUserFirstName = () : string => {
+        var token = localStorage.getItem('token');
+        if (!token) {
+            return '';
+        }
+
+        let resultToken : IToken = jwtDecode<IToken>(token);
+
+        if (!resultToken.FirstName) {
+            console.log("something is wrong with the token");
+            return '';
+        }
+
+        return resultToken.FirstName;
+    }
 }
 
 export const authenticationService = new AuthenticationService();

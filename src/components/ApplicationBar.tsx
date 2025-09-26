@@ -40,7 +40,6 @@ export default function ApplicationBar(props: Props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [loginName, setLoginName] = React.useState('');
   const open = Boolean(anchorEl);
 
   const StyledMenu = styled((props: MenuProps) => (
@@ -121,15 +120,19 @@ export default function ApplicationBar(props: Props) {
     );
   }
 
-  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLElement>) => void) => {
-    return (<Button key={title} sx={{ color: '#fff' }} onClick={onclick}>
-              {title}
-            </Button>
-    );
-  }
+  const renderMobileLoginMenuListItem = () => {
+    let title: string = 'Login';
 
-  const isUserLoggedIn = (): boolean => {
-    return authenticationService.isUserLoggedIn();
+    if(isUserLoggedIn()){
+      title = 'Logout ' + getLoginName();
+    }
+
+    return (<ListItem key={title} disablePadding>
+          <ListItemButton sx={{ textAlign: 'center' }}>
+            <ListItemText primary={title} onClick={handleLoginDesktop}/>
+          </ListItemButton>
+        </ListItem>    
+    );
   }
 
   const renderLoginMenuButton = () => {
@@ -141,10 +144,25 @@ export default function ApplicationBar(props: Props) {
     }
     
     return (<Button key='Login' sx={{ color: '#fff' }} onClick={handleLoginDesktop}>
-              {'Logout ' + loginName}
+              {'Logout ' + getLoginName()}
             </Button>
       );
   } 
+
+  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLElement>) => void) => {
+    return (<Button key={title} sx={{ color: '#fff' }} onClick={onclick}>
+              {title}
+            </Button>
+    );
+  }
+
+  const isUserLoggedIn = (): boolean => {
+    return authenticationService.isUserLoggedIn();
+  }
+
+  const getLoginName = (): string => {
+    return authenticationService.getUserFirstName();
+  }
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -157,7 +175,7 @@ export default function ApplicationBar(props: Props) {
           {renderMobileMenuListItem("Schedule", ()=>{})}
           {renderMobileMenuListItem("Donate", ()=>{})}
           {renderMobileMenuListItem("Post", ()=>{})}
-          {renderMobileMenuListItem("Login", handleLogin)}
+          {renderMobileLoginMenuListItem()}
           {renderMobileMenuListItem("Help", ()=>{})}
       </List>
     </Box>
@@ -168,10 +186,6 @@ export default function ApplicationBar(props: Props) {
     setShowLogin(false);    
   };
 
-  const handleOnLoginResult = (result: boolean, name: string) => {
-    setLoginName(name);
-  }
-  
   return (
     <div>
     <Box sx={{ display: 'flex' }}>
@@ -257,8 +271,7 @@ export default function ApplicationBar(props: Props) {
       </Box>      
     </Box>
     <LoginDlg open={showLogin} 
-              onClose={handleOnCloseLoginDlg}
-              onLoginResult={handleOnLoginResult}/>
+              onClose={handleOnCloseLoginDlg}/>
     </div>
   );
 }
