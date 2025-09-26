@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
@@ -23,7 +23,17 @@ export default function LoginDlg(props: LoginDlgProps) {
   const [hasErrors, setHasErrors] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [specificError, setSpecificError] = React.useState('');
-    
+  
+  useEffect(() => {
+    if (open) {
+      console.log('Dialog is now open!');
+      setUserId('');
+      setPassword('');
+      setIsUserIDValid(false);
+      setPasswordValid(false);
+    } 
+  }, [open]); // Depend on the isOpen state
+
   const onSubmit = async() => {
     setIsSubmitting(true);
 
