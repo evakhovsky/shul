@@ -41,6 +41,7 @@ export default function ApplicationBar(props: Props) {
   const [showLogin, setShowLogin] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [, forceUpdate] = React.useState({}); // Dummy state variable
 
   const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -94,7 +95,13 @@ export default function ApplicationBar(props: Props) {
   };
 
   const handleLoginDesktop = (event: React.MouseEvent<HTMLElement>) => {
-    handleLogin();
+    if(!isUserLoggedIn()){
+      handleLogin();
+    }
+
+    authenticationService.logout();      
+    forceUpdate({}); // Update the dummy state to trigger re-render
+      
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

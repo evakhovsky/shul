@@ -25,5 +25,6 @@ export interface IAuthenticationService {
     login(username: string, password: string ): Promise<IUserLogin>;
     isUserLoggedIn() : boolean;
     getUserFirstName() : string;
+    logout() : void;
 }
 

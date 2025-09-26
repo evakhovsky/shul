@@ -78,6 +78,10 @@ class AuthenticationService implements IAuthenticationService {
 
         return resultToken.FirstName;
     }
+
+    public logout = () : void => {
+        localStorage.removeItem('token');
+    }
 }
 
 export const authenticationService = new AuthenticationService();
