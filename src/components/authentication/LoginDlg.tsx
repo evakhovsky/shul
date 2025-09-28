@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { authenticationService } from '../shared/services/Authenticationservice';
 import { IUserLogin } from '../shared/services/IAuthenticationservice';
 import { View } from 'react-native';
+import { Link } from 'react-router-dom'
 
 export interface LoginDlgProps {
   open: boolean;
@@ -32,6 +33,9 @@ export default function LoginDlg(props: LoginDlgProps) {
       setPassword('');
       setIsUserIDValid(false);
       setPasswordValid(false);
+      setHasErrors(false);
+      setIsSubmitting(false);
+      setSpecificError('');
     } 
   }, [open]); // Depend on the isOpen state
 
@@ -45,6 +49,9 @@ export default function LoginDlg(props: LoginDlgProps) {
 
     if(!result || result === null){
       console.log('null result from login');
+      setSpecificError('It seems that there is an issue with the server');
+      setIsSubmitting(false);
+      setHasErrors(true);
       return;
     }
 
@@ -140,6 +147,13 @@ export default function LoginDlg(props: LoginDlgProps) {
     }
   }
 
+  const renderRegisterLink = () => {
+    return <Link 
+    style={{marginBottom: "20px", marginLeft: "10px"}}
+        to="/register" onClick={() => {window.location.href="/register"}}>Register
+    </Link>;    
+  }
+
   return (
     <Dialog open={open} 
             onClose={onClose}
@@ -166,8 +180,11 @@ export default function LoginDlg(props: LoginDlgProps) {
         {renderPasswordLabel()}
         {renderPasswordInput()}
         {renderError()}
-        <View style={{ flex: 0.5, justifyContent: "flex-end", alignItems: 'flex-end' }}>
-          <Button variant="contained" onClick={onSubmit} disabled = {!isSubmitValid()}>
+        <View style={{ flex: 1, justifyContent: "flex-end", flexDirection: 'row', alignItems: 'flex-end' }}>
+          <View style={{ flex: 0.2, justifyContent: "center", alignItems: 'center' }}>
+            {renderRegisterLink()}
+          </View>
+          <Button style={{ marginTop: "10px", marginRight: "15px", marginBottom: "15px" }} variant="contained" onClick={onSubmit} disabled = {!isSubmitValid()}>
             {isSubmitting ? "Submitting..." : "Sign in"}
           </Button>
         </View>

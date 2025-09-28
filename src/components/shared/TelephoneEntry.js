@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import '../authentication/Register.css';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import { TableCell, TableRow } from '@mui/material';
 
 export const telephoneEntry = {
     TelephoneInput
