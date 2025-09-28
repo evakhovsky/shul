@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import { authenticationService } from '../shared/services/Authenticationservice';
 import { IUserLogin } from '../shared/services/IAuthenticationservice';
+import { View } from 'react-native';
 
 export interface LoginDlgProps {
   open: boolean;
@@ -165,9 +166,11 @@ export default function LoginDlg(props: LoginDlgProps) {
         {renderPasswordLabel()}
         {renderPasswordInput()}
         {renderError()}
-      <Button onClick={onSubmit} disabled = {!isSubmitValid()}>
-        {isSubmitting ? "Submitting..." : "Submit"}
-      </Button>
+        <View style={{ flex: 0.5, justifyContent: "flex-end", alignItems: 'flex-end' }}>
+          <Button variant="contained" onClick={onSubmit} disabled = {!isSubmitValid()}>
+            {isSubmitting ? "Submitting..." : "Sign in"}
+          </Button>
+        </View>
     </Dialog>
   );
 }
