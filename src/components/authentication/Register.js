@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './Register.css';
 import { View } from 'react-native';
 import Button from 'react-bootstrap/Button';
@@ -12,6 +12,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const SHUL = process.env.REACT_APP_SHUL;
 
 function Register() {
+  console.log(SERVER_URL);
   
   const handleUserIDChange = async(event) => {
     let userId = event.target.value;
@@ -77,12 +78,12 @@ function Register() {
     let url = SERVER_URL + 'api/RegisterUser/getUserFromEmailUserIDCombination/' + email + "/" + (!userId ? '!' : userId);
     console.log("url" + url);
     let result;
-    try{
-      result = await fetch(url);    
-    }
-    catch(error){
-      setErrors({invalidEmail: "unfortunately, there seems to be a problem with the server at the moment. Please try again later"})
-      setIsEmailValid(false);
+    try
+    {
+      result = await fetch(url);
+    } catch (error) {
+      console.error("Caught an error:", error.message);
+      setErrors({invalidEmail: "unfortunately, there seems to be a problem with the server at the moment. Please try again later"});
       return;
     }
     const checkUserResponse = await result.json();
@@ -197,7 +198,7 @@ function Register() {
 
   const renderRegistrationConfirmation = () => {
     if (isConfirmationRedirect) {
-      return <Navigate to="/registerConfirmation" />;
+      return <Navigate to="registerConfirmation" />;
     }
   }
 
@@ -276,7 +277,6 @@ function Register() {
           return;
         }
 
-        console.log('Confirmation redirect');
         setconfirmationRedirect(true);
     }).catch(function(error) {
         console.log(error);
@@ -301,6 +301,7 @@ function Register() {
             </tr>
             <firstNameEntry.FirstNameInput onFirstNameChange={changeFirstName} name={firstName} controlsStyle="table"/>
             <lastNameEntry.LastNameInput onLastNameChange={changeLastName} name={lastName}/>
+            <div>
             <tr>
               <td>
                 {renderUserIdlLabel()}
@@ -334,8 +335,9 @@ function Register() {
                   <span style={{color: "red"}}>{errors["invalidEmail"]}</span>                  
               </td>
             </tr>
-            
+            </div>
             <telephoneEntry.TelephoneInput onTelephoneChange={changeTelephone} telephone={telephone} controlsStyle="table"/>
+            <div>
             <tr>
               <td>
                 {renderPasswordLabel()}
@@ -383,6 +385,7 @@ function Register() {
               {renderRegistrationConfirmation()}              
               </td>
             </tr>
+            </div>
           </tbody>
         </table>        
       </form>
