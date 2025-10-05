@@ -24,6 +24,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LoginIcon from '@mui/icons-material/Login';
 import { authenticationService } from '../components/shared/services/Authenticationservice';
+import { useAppBar } from '../components/shared/AppBarContext';
 
 interface Props {
   /**
@@ -42,6 +43,7 @@ export default function ApplicationBar(props: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [, forceUpdate] = React.useState({}); // Dummy state variable
+  const { title } = useAppBar();
 
   const StyledMenu = styled((props: MenuProps) => (
   <Menu

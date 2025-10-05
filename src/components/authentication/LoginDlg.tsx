@@ -11,6 +11,7 @@ import { IUserLogin } from '../shared/services/IAuthenticationservice';
 import { View } from 'react-native';
 import { Link } from 'react-router-dom'
 import { createBrowserHistory } from "history";
+import { useAppBar } from '../shared/AppBarContext';
 
 export interface LoginDlgProps {
   open: boolean;
@@ -26,7 +27,8 @@ export default function LoginDlg(props: LoginDlgProps) {
   const [hasErrors, setHasErrors] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [specificError, setSpecificError] = React.useState('');
-  
+  const { updateTitle } = useAppBar();
+
   useEffect(() => {
     if (open) {
       console.log('Dialog is now open!');
@@ -64,6 +66,7 @@ export default function LoginDlg(props: LoginDlgProps) {
     if(token) {
         onClose();
         setIsSubmitting(false);
+        updateTitle('Updated Title via Context');
         return;
     }
 

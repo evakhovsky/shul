@@ -9,6 +9,7 @@ import RegistrationConfirmationComponent from './components/authentication/Regis
 import ForgotCredentials from './components/authentication/ForgotCredentials';
 import PasswordReset from './components/authentication/PasswordReset';
 import PasswordResetWasSent from './components/authentication/PasswordResetWasSent';
+import { AppBarProvider } from './components/shared/AppBarContext';
 
 function App() {
   const routesMap = { 
@@ -23,17 +24,19 @@ function App() {
   return (
     <>
       <div className="app">
-        <Router>
-          <ApplicationBar/>
-          <Routes>
-            <Route path={routesMap.login} element={<LoginComponent />} />
-            <Route path={routesMap.register} element={<Register />} />
-            <Route path={routesMap.registerConfirmation} element={<RegistrationConfirmationComponent />} />
-            <Route path={routesMap.forgotCredentials} element={<ForgotCredentials />} />
-            <Route path={routesMap.passwordReset} element={<PasswordReset />} />
-            <Route path={routesMap.passwordResetWasSent} element={<PasswordResetWasSent />} />
-          </Routes>
-        </Router>
+        <AppBarProvider>
+          <Router>          
+              <ApplicationBar/>          
+            <Routes>
+              <Route path={routesMap.login} element={<LoginComponent />} />
+              <Route path={routesMap.register} element={<Register />} />
+              <Route path={routesMap.registerConfirmation} element={<RegistrationConfirmationComponent />} />
+              <Route path={routesMap.forgotCredentials} element={<ForgotCredentials />} />
+              <Route path={routesMap.passwordReset} element={<PasswordReset />} />
+              <Route path={routesMap.passwordResetWasSent} element={<PasswordResetWasSent />} />
+            </Routes>
+          </Router>
+        </AppBarProvider>
       </div>
     </>
   );
