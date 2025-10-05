@@ -77,11 +77,68 @@ class AuthenticationService implements IAuthenticationService {
         }
 
         return resultToken.FirstName;
-    }
+    }    
 
     public logout = () : void => {
         localStorage.removeItem('token');
     }
+
+    public async resetPassword(email: string) : Promise<string>{
+      console.log('sending reset password request');
+      const path = window.location.origin.toString();
+      const data = JSON.stringify({ email: email, userName: '', baseUrl: path + '/passwordReset', source: SHUL});
+      let result = ' ';
+
+      await fetch(SERVER_URL + 'api/RegisterUser/RequestPasswordReset', {  method: 'POST',  body: data, headers: {
+        'Content-Type': 'application/json',
+      }}).then(function(response) {      
+          console.log(response);
+          return response.json();
+        }).then(function(data) {
+          console.log(data);          
+          if(!data.emailAlreadyPresent || !data.emailExistsInContacts || !data.userIDAlreadyPresent){
+                result = 'Email was not found';
+            }
+      }).catch(function(error) {
+          console.log(error);
+          result = 'There was an error during submission';
+      });
+
+      return result;
+    }
+
+    public async resetCredentials(email: string, token: string, password: string) : Promise<string>{
+      const data = JSON.stringify({ email: email, token: token, password: password});
+      let result = ' ';
+      console.log('sending password reset');
+      console.log(data);
+
+      await fetch(SERVER_URL + 'api/RegisterUser/PasswordReset', {  method: 'POST',  body: data, headers: {
+          'Content-Type': 'application/json',
+        }})
+        .then(function(response) {      
+            console.log(response);
+            return response.json();
+          }).then(function(data) {
+            console.log(data);
+            if(data.generalStatus){
+                
+            }
+            if(data.errors){
+              result = data.errors;
+            }
+
+            if(!data.generalStatus){
+              result = 'There was an error during submission';    
+            }
+        }).catch(function(error) {
+            console.log(error);
+            result = 'There was an error during submission';
+        });
+
+      return result;
+    }
+
 }
 
 export const authenticationService = new AuthenticationService();

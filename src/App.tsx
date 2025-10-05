@@ -6,12 +6,18 @@ import ApplicationBar from './components/ApplicationBar'
 import LoginComponent from './components/authentication/Login';
 import Register from './components/authentication/Register';
 import RegistrationConfirmationComponent from './components/authentication/RegistrationConfirm';
+import ForgotCredentials from './components/authentication/ForgotCredentials';
+import PasswordReset from './components/authentication/PasswordReset';
+import PasswordResetWasSent from './components/authentication/PasswordResetWasSent';
 
 function App() {
   const routesMap = { 
     login: "/login",
     register: "/register",
-    registerConfirmation: "/registerConfirmation"
+    registerConfirmation: "/registerConfirmation",
+    forgotCredentials: '/forgotCredentials',
+    passwordReset: '/passwordReset',
+    passwordResetWasSent: '/passwordResetWasSent'
   };
 
   return (
@@ -23,6 +29,9 @@ function App() {
             <Route path={routesMap.login} element={<LoginComponent />} />
             <Route path={routesMap.register} element={<Register />} />
             <Route path={routesMap.registerConfirmation} element={<RegistrationConfirmationComponent />} />
+            <Route path={routesMap.forgotCredentials} element={<ForgotCredentials />} />
+            <Route path={routesMap.passwordReset} element={<PasswordReset />} />
+            <Route path={routesMap.passwordResetWasSent} element={<PasswordResetWasSent />} />
           </Routes>
         </Router>
       </div>

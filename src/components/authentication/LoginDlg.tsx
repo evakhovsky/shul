@@ -10,6 +10,7 @@ import { authenticationService } from '../shared/services/Authenticationservice'
 import { IUserLogin } from '../shared/services/IAuthenticationservice';
 import { View } from 'react-native';
 import { Link } from 'react-router-dom'
+import { createBrowserHistory } from "history";
 
 export interface LoginDlgProps {
   open: boolean;
@@ -148,9 +149,26 @@ export default function LoginDlg(props: LoginDlgProps) {
   }
 
   const renderRegisterLink = () => {
+    if (isRegisterRoute()) {
+      return;
+    }
+
     return <Link 
     style={{marginBottom: "20px", marginLeft: "10px"}}
         to="/register" onClick={() => {window.location.href="/register"}}>Register
+    </Link>;    
+  }
+
+  const isRegisterRoute = () => {
+          let history = createBrowserHistory();
+          let currentRoute = history.location.pathname;
+          return currentRoute === '/register';
+      }
+
+  const renderForgotCredentialsLink = () => {
+    return <Link 
+    style={{marginBottom: "20px", marginRight: "15px"}}
+        to="/register" onClick={() => {window.location.href="/forgotCredentials"}}>Forgot user name or password
     </Link>;    
   }
 
@@ -186,7 +204,10 @@ export default function LoginDlg(props: LoginDlgProps) {
           </View>
           <Button style={{ marginTop: "10px", marginRight: "15px", marginBottom: "15px" }} variant="contained" onClick={onSubmit} disabled = {!isSubmitValid()}>
             {isSubmitting ? "Submitting..." : "Sign in"}
-          </Button>
+          </Button>          
+        </View>
+        <View style={{ flex: 1, justifyContent: "flex-end", alignItems: 'flex-end' }}>
+          {renderForgotCredentialsLink()}
         </View>
     </Dialog>
   );
