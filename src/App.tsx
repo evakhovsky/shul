@@ -1,6 +1,5 @@
-import React from 'react';
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ApplicationBar from './components/ApplicationBar'
 import LoginComponent from './components/authentication/Login';
@@ -10,17 +9,10 @@ import ForgotCredentials from './components/authentication/ForgotCredentials';
 import PasswordReset from './components/authentication/PasswordReset';
 import PasswordResetWasSent from './components/authentication/PasswordResetWasSent';
 import { AppBarProvider } from './components/shared/AppBarContext';
+import { routesMap } from './components/shared/routeConfig';
+import Home from './components/pages/Home';
 
 function App() {
-  const routesMap = { 
-    login: "/login",
-    register: "/register",
-    registerConfirmation: "/registerConfirmation",
-    forgotCredentials: '/forgotCredentials',
-    passwordReset: '/passwordReset',
-    passwordResetWasSent: '/passwordResetWasSent'
-  };
-
   return (
     <>
       <div className="app">
@@ -28,6 +20,8 @@ function App() {
           <Router>          
               <ApplicationBar/>          
             <Routes>
+              <Route path="/" element={<Navigate to={routesMap.home} />} />
+              <Route path={routesMap.home} element={<Home />}/>
               <Route path={routesMap.login} element={<LoginComponent />} />
               <Route path={routesMap.register} element={<Register />} />
               <Route path={routesMap.registerConfirmation} element={<RegistrationConfirmationComponent />} />

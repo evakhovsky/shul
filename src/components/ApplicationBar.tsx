@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { MouseEvent } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -25,6 +25,11 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import LoginIcon from '@mui/icons-material/Login';
 import { authenticationService } from '../components/shared/services/Authenticationservice';
 import { useAppBar } from '../components/shared/AppBarContext';
+import { useLocation } from 'react-router-dom';
+import { routeConfig } from './shared/routeConfig';
+import { routesMap } from './shared/routeConfig';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   /**
@@ -44,6 +49,8 @@ export default function ApplicationBar(props: Props) {
   const open = Boolean(anchorEl);
   const [, forceUpdate] = React.useState({}); // Dummy state variable
   const { title } = useAppBar();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -102,13 +109,9 @@ export default function ApplicationBar(props: Props) {
     }
 
     authenticationService.logout();      
-    forceUpdate({}); // Update the dummy state to trigger re-render
-      
+    forceUpdate({}); // Update the dummy state to trigger re-render      
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
   const handleClose = (menuClicked: string) => {
     setAnchorEl(null);
     console.log(menuClicked);
@@ -120,10 +123,16 @@ export default function ApplicationBar(props: Props) {
     setShowLogin(true);
   }
 
-  const renderMobileMenuListItem = (title: string, onclick: () => void) => {
+  const handleMobileMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    console.log('List item clicked:', event.currentTarget.innerText);
+
+    menuNavigate(event.currentTarget.innerText);
+  }
+
+  const renderMobileMenuListItem = (title: string) => {
     return (<ListItem key={title} disablePadding>
           <ListItemButton sx={{ textAlign: 'center' }}>
-            <ListItemText primary={title} onClick={onclick}/>
+            <ListItemText primary={title} onClick={handleMobileMenuClick}/>
           </ListItemButton>
         </ListItem>    
     );
@@ -158,7 +167,25 @@ export default function ApplicationBar(props: Props) {
       );
   } 
 
-  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLElement>) => void) => {
+  const handleMenuButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
+    const clickedButton = event.currentTarget; 
+    const buttonTitle = clickedButton.textContent; 
+
+    console.log(`Button with title "${buttonTitle}" was clicked.`);
+    
+    menuNavigate(buttonTitle);
+  };
+
+  const menuNavigate = (title: string | null) => {
+    switch(title)
+    {
+      case "Home":
+        navigate(routesMap.home);
+        break;
+    }
+  }
+
+  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLButtonElement>) => void) => {
     return (<Button key={title} sx={{ color: '#fff' }} onClick={onclick}>
               {title}
             </Button>
@@ -180,12 +207,12 @@ export default function ApplicationBar(props: Props) {
       </Typography>
       <Divider />
       <List>
-          {renderMobileMenuListItem("Home", ()=>{})}
-          {renderMobileMenuListItem("Schedule", ()=>{})}
-          {renderMobileMenuListItem("Donate", ()=>{})}
-          {renderMobileMenuListItem("Post", ()=>{})}
+          {renderMobileMenuListItem("Home")}
+          {renderMobileMenuListItem("Schedule")}
+          {renderMobileMenuListItem("Donate")}
+          {renderMobileMenuListItem("Post")}
           {renderMobileLoginMenuListItem()}
-          {renderMobileMenuListItem("Help", ()=>{})}
+          {renderMobileMenuListItem("Help")}
       </List>
     </Box>
   );
@@ -193,6 +220,16 @@ export default function ApplicationBar(props: Props) {
   const handleOnCloseLoginDlg = () => {
     console.log('handleOnCloseLoginDlg');
     setShowLogin(false);    
+  };
+
+  const renderCurrentURL = () => {
+    console.log('location.pathname');
+    console.log(location.pathname);
+    if(!routeConfig.isPublicRouter(location.pathname)){
+      return;
+    }
+
+    return(<div></div>);
   };
 
   return (
@@ -247,10 +284,10 @@ export default function ApplicationBar(props: Props) {
             More
           </MenuItem>
         </StyledMenu>
-            {renderDesktopMenuButton("Home", () => {})}
+            {renderDesktopMenuButton("Home", handleMenuButtonClick)}
             {renderDesktopMenuButton("Schedule", () => {})}
             {renderDesktopMenuButton("Donate", () => {})}
-            {renderDesktopMenuButton("Post", handleClick)}
+            {renderDesktopMenuButton("Post", handleMenuButtonClick)}
             {renderLoginMenuButton()}
             {renderDesktopMenuButton("Help", () => {})}
           </Box>
@@ -275,7 +312,7 @@ export default function ApplicationBar(props: Props) {
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
         <Typography>
-          Lorem 
+          {renderCurrentURL()}
         </Typography>
       </Box>      
     </Box>
