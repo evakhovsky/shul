@@ -14,9 +14,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginDlg from './authentication/LoginDlg';
-import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper';
 import { styled, alpha } from '@mui/material/styles';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -28,7 +26,6 @@ import { useAppBar } from '../components/shared/AppBarContext';
 import { useLocation } from 'react-router-dom';
 import { routeConfig } from './shared/routeConfig';
 import { routesMap } from './shared/routeConfig';
-import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
