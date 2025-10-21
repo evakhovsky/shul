@@ -4,16 +4,15 @@ import { Text, StyleSheet, View } from 'react-native';
 import logo from './images/mdShulInside.jpg';
 import futureShul from './images/future_shul.jpg'
 import rb from './images/rb.jpg'
+import './Home.css';
+import { Link } from "react-router-dom";
+import hebrewDayInfo from '../shared/homeComponents/HebrewDateInfo'
 
 const SHUL = process.env.REACT_APP_SHUL;
 
 function Home() {
     const [entity, setEntity] = useState(false);
     const [address, setAddress] = useState(false);
-
-    return (<div>
-        <h1>Home</h1>
-    </div>);
 
     return IsMobile() ? <MobileHome entity={entity} address={address}/> : <DesktopHome entity={entity} address={address}/>;
 }
@@ -23,6 +22,16 @@ function IsMobile() {
     const breakpoint = 768;
 
     return width < breakpoint;
+}
+
+const renderScheduleLink = () => {
+    return <Link to="/shulSchedule">Schedule</Link>;
+}
+
+const renderHebrewDay = () => {
+    return (<div>
+        <hebrewDayInfo.HebrewDayInfo format="desktop" />
+    </div>);
 }
 
 function MobileHome(props) {
@@ -49,6 +58,12 @@ function DesktopHome(props) {
 
     return (
         <div>
+            <div className="centerText">
+                {renderScheduleLink()}
+            </div>
+            <div className="flex-container">
+                {renderHebrewDay()}
+            </div>
             <div className="flex-container">
                 <HousePic showLogoPicture={showLogoPicture} />
             </div>
