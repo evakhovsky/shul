@@ -2,7 +2,6 @@ import './App.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ApplicationBar from './components/ApplicationBar'
-import LoginComponent from './components/authentication/Login';
 import Register from './components/authentication/Register';
 import RegistrationConfirmationComponent from './components/authentication/RegistrationConfirm';
 import ForgotCredentials from './components/authentication/ForgotCredentials';
@@ -22,7 +21,6 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to={routesMap.home} />} />
               <Route path={routesMap.home} element={<Home />}/>
-              <Route path={routesMap.login} element={<LoginComponent />} />
               <Route path={routesMap.register} element={<Register />} />
               <Route path={routesMap.registerConfirmation} element={<RegistrationConfirmationComponent />} />
               <Route path={routesMap.forgotCredentials} element={<ForgotCredentials />} />

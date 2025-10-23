@@ -9,6 +9,7 @@ import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import ZmanimDlg from './ZmanimDlg'
+import Zmanimialog from './ZmanimDialog'
 import useViewport from '../ViewportProvider'
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
@@ -27,6 +28,7 @@ export function HebrewDayInfo({format}) {
     const [zmanim, setZmanim] = useState('');
     const [language, setLanguage] = useState('Hebrew');
     const [astronomicalTimes, setAstronomicalTimes] = useState(null);
+    const [key, setKey] = useState(0); // Initial key for rerender
 
     const populateZmanim = useCallback(async (date) => {
         let zmanim = await hebcalAPIservice.getDateZmanim(formatDayDate(date));
@@ -92,6 +94,8 @@ export function HebrewDayInfo({format}) {
         setZmanimString('');
         currentDate.setDate(currentDate.getDate() + 1);
         await populateOnDateChange(currentDate);
+        setGregorianDate(currentDate);
+        forceDatePickerRerender();
     };
 
     const handleSubtractDay = async () => {
@@ -113,10 +117,15 @@ export function HebrewDayInfo({format}) {
         setShowZmanimDlg(true);    
     }
 
+    const forceDatePickerRerender = () => {
+        setKey(prevKey => prevKey + 1); // Update the key to force re-render
+    }
+
     const renderGregorianDate = () => {
         return <LocalizationProvider dateAdapter={AdapterDateFns}>
 
         <DatePicker
+          key={key} // Assign the key
           value={gregorianDate}
           format="MM/dd/yyyy EEEE"
           onChange={handleDateChange}
@@ -139,13 +148,15 @@ export function HebrewDayInfo({format}) {
     }
 
     const renderZmanimDlg = () => {
-        return <ZmanimDlg showModal={showZmanimDlg} 
+        /*return <ZmanimDlg showModal={showZmanimDlg} 
                           onClose={onZmanimDlgClose} 
                           zmanim={zmanim} 
                           currentDate={gregorianDate} 
                           onSwitchLanguage={onSwitchLanguage} 
                           language={language}
-                          astronomicalTimes={astronomicalTimes}/>
+                          astronomicalTimes={astronomicalTimes}/>*/
+        return <Zmanimialog open={showZmanimDlg} 
+                            onClose={onZmanimDlgClose}/>
     }
 
     const onSwitchLanguage = () => {
