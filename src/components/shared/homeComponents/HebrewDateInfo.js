@@ -8,7 +8,6 @@ import Table from 'react-bootstrap/Table'
 import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import ZmanimDlg from './ZmanimDlg'
 import ZmanimDialog from './ZmanimDialog'
 import useViewport from '../ViewportProvider'
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
