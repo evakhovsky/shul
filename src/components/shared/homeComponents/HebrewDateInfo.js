@@ -9,7 +9,7 @@ import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import ZmanimDlg from './ZmanimDlg'
-import Zmanimialog from './ZmanimDialog'
+import ZmanimDialog from './ZmanimDialog'
 import useViewport from '../ViewportProvider'
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
@@ -29,6 +29,7 @@ export function HebrewDayInfo({format}) {
     const [language, setLanguage] = useState('Hebrew');
     const [astronomicalTimes, setAstronomicalTimes] = useState(null);
     const [key, setKey] = useState(0); // Initial key for rerender
+    const [zmanimTS, setZmanimTS] = useState({});
 
     const populateZmanim = useCallback(async (date) => {
         let zmanim = await hebcalAPIservice.getDateZmanim(formatDayDate(date));
@@ -36,11 +37,73 @@ export function HebrewDayInfo({format}) {
             return;
         }
 
-        console.log(zmanim)
+        //console.log(zmanim);
+        unpackZmanimforTypeScript(zmanim);
 
         setZmanim(zmanim);
         setZmanimString(zmanim.jDayZmanimString);
     }, [])
+
+    const unpackZmanimforTypeScript = (zmanim) => {
+            console.log('***');        
+            console.log(zmanim);
+            console.log(zmanim.alotHaShachar);
+            console.log('***');
+
+            const zmanimData = {
+                chatzotNight: zmanim.chatzotNight,
+                chatzotNightTime: zmanim.chatzotNightTime,
+                chatzotNightTime: zmanim.chatzotNightTime,
+                alotHaShachar: zmanim.alotHaShachar,
+                alotHaShacharTime: zmanim.alotHaShacharTime,
+                misheyakir: zmanim.misheyakir,
+                misheyakirTime: zmanim.misheyakirTime,
+                misheyakirMachmir: zmanim.misheyakirMachmir,
+                misheyakirMachmirTime: zmanim.misheyakirMachmirTime,
+                dawn: zmanim.dawn,
+                dawnTime: zmanim.dawnTime,
+                sunrise: zmanim.sunrise,
+                sunriseTime: zmanim.sunriseTime,
+                sofZmanShma: zmanim.sofZmanShma,
+                sofZmanShmaTime: zmanim.sofZmanShmaTime,
+                sofZmanTfilla: zmanim.sofZmanTfilla,
+                sofZmanTfillaTime: zmanim.sofZmanTfillaTime,
+                chatzot: zmanim.chatzot,
+                chatzotTime: zmanim.chatzotTime,
+                minchaGedola: zmanim.minchaGedola,
+                minchaGedolaTime: zmanim.minchaGedolaTime,
+                minchaKetana: zmanim.minchaKetana,
+                minchaKetanaTime: zmanim.minchaKetanaTime,
+                plagHaMincha: zmanim.plagHaMincha,
+                plagHaMinchaTime: zmanim.plagHaMinchaTime,
+                sunset: zmanim.sunset,
+                sunsetTime: zmanim.sunsetTime,
+                tzeit42min: zmanim.tzeit42min,
+                tzeit42minTime: zmanim.tzeit42minTime,
+                tzeit50min: zmanim.tzeit50min,
+                tzeit50minTime: zmanim.tzeit50minTime,
+                tzeit72min: zmanim.tzeit72min,
+                tzeit72minTime: zmanim.tzeit72minTime,
+                chatzotNightEng: zmanim.chatzotNightEng,
+                alotHaShacharEng: zmanim.alotHaShacharEng,
+                misheyakirEng: zmanim.misheyakirEng,
+                misheyakirMachmirEng: zmanim.misheyakirMachmirEng,
+                dawnEng: zmanim.dawnEng,
+                sunriseEng: zmanim.sunriseEng,
+                sofZmanShmaEng: zmanim.sofZmanShmaEng,
+                sofZmanTfillaEng: zmanim.sofZmanTfillaEng,
+                chatzotEng: zmanim.chatzotEng,
+                minchaGedolaEng: zmanim.minchaGedolaEng,
+                minchaKetanaEng: zmanim.minchaKetanaEng,
+                plagHaMinchaEng: zmanim.plagHaMinchaEng,
+                sunsetEng: zmanim.sunsetEng,
+                tzeit42minEng: zmanim.tzeit42minEng,
+                tzeit50minEng: zmanim.tzeit50minEng,
+                tzeit72minEng: zmanim.tzeit72minEng
+            };
+
+            setZmanimTS(zmanimData);
+    }
 
     const populateAstronomicalTimes = useCallback(async (date) => {
         let astronomicalTimes = await hebcalAPIservice.getAstronomicalTimes(formatDayDate(date));
@@ -84,7 +147,7 @@ export function HebrewDayInfo({format}) {
         setZmanimString('');
         let dayFormatted = await hebcalAPIservice.getDateTimes(formatDayDate(date), format);            
         setDayString(dayFormatted);
-        setGregorianDate(date);        
+        setGregorianDate(date);
         populateZmanim(date);
         populateAstronomicalTimes(date);
     };
@@ -157,8 +220,12 @@ export function HebrewDayInfo({format}) {
                           onSwitchLanguage={onSwitchLanguage} 
                           language={language}
                           astronomicalTimes={astronomicalTimes}/>*/
-        return <Zmanimialog open={showZmanimDlg} 
-                            onClose={onZmanimDlgClose}/>
+        return <ZmanimDialog open={showZmanimDlg} 
+                             onClose={onZmanimDlgClose}
+                             zmanim={zmanimTS}
+                             currentDate={gregorianDate}
+                             onSwitchLanguage={onSwitchLanguage}
+                             language={language} />
     }
 
     const onSwitchLanguage = () => {
