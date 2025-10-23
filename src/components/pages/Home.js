@@ -37,15 +37,15 @@ const renderHebrewDay = () => {
 function MobileHome(props) {
     const [showLogoPicture, setShowLogoPicture] = useState(false);
 
-    return (
-        <View>
-            <div className='home'>
+    return (<div className='home'>
+                <View style={{ justifyContent: "center" }}>
+                    {renderHebrewDay()}
+                </View>
                 <div className="centerText">
                 </div>
                 <HousePic showLogoPicture={showLogoPicture} />
                 <br></br>
             </div>
-        </View>
     )
 }
 
