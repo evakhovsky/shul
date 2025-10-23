@@ -103,6 +103,8 @@ export function HebrewDayInfo({format}) {
         setZmanimString('');
         currentDate.setDate(currentDate.getDate() - 1);
         await populateOnDateChange(currentDate);
+        setGregorianDate(currentDate);
+        forceDatePickerRerender();
     };
 
     const populateOnDateChange = async (date) => {
