@@ -49,3 +49,14 @@ export interface ZmanItem {
     tzeit50minEng?: string;
     tzeit72minEng?: string;
 }
+
+export interface IAstronomicalTimesItem {
+    sunrise:string;
+    sunset:string;
+    dawn:string;
+    dusk:string;
+    first_light:string;
+    last_light:string;
+    solar_noon:string;
+    day_length:string;
+}

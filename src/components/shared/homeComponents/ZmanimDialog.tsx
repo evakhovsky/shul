@@ -3,7 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import {ZmanItem} from '../interfaces/IZmanim'
+import {ZmanItem, IAstronomicalTimesItem} from '../interfaces/IZmanim'
 import { format } from 'date-fns';
 import {Table, TableRow, TableCell} from '@mui/material';
 import { View, Text } from 'react-native';
@@ -15,10 +15,11 @@ export interface ZmanimDialogProps {
   currentDate: Date;
   onSwitchLanguage: () => void;
   language: string;
+  astronomicalTimes: IAstronomicalTimesItem;
 }
 
 export default function ZmanimDialog(props: ZmanimDialogProps) {
-  const {open, onClose, zmanim, currentDate, onSwitchLanguage, language} = props;
+  const {open, onClose, zmanim, currentDate, onSwitchLanguage, language, astronomicalTimes} = props;
   
     useEffect(() => {
       if (open) {
@@ -65,7 +66,7 @@ export default function ZmanimDialog(props: ZmanimDialogProps) {
 
     const renderZmanimInEnglish = () => {
         return(
-        <Table>
+            <Table>
                 <TableRow>
                     {ZmanTableCellLeftEng(zmanim.chatzotNightEng)}
                     {ZmanTableCellRightEng(zmanim.chatzotNightTime)}
@@ -205,6 +206,62 @@ export default function ZmanimDialog(props: ZmanimDialogProps) {
         );
     }
 
+    const renderAstronomicalTimesTitle = () => {
+        if(!astronomicalTimes){
+            return;
+        }
+
+        return(
+            <View style={{ justifyContent: "center", alignItems: 'center' }}>
+                <div>
+                    <p><Text style={{color: '#c83c1e'}}>Astronomical Times (not halachic)</Text></p>
+                </div>
+            </View>
+        )
+    }
+
+    const renderAstronomicalTimes = () => {
+        if(!astronomicalTimes || astronomicalTimes === null){
+            return;
+        }
+
+        return (<div style={{ marginTop: "10px" }}>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
+                {renderAstronomicalTimesTitle()}
+                <Table>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("First Light")}
+                        {ZmanTableCellRightEng(astronomicalTimes.first_light)}
+                    </TableRow>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("Dawn")}
+                        {ZmanTableCellRightEng(astronomicalTimes.dawn)}
+                    </TableRow>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("Sunrise")}
+                        {ZmanTableCellRightEng(astronomicalTimes.sunrise)}
+                    </TableRow>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("Solar noon")}
+                        {ZmanTableCellRightEng(astronomicalTimes.solar_noon)}
+                    </TableRow>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("Sunset")}
+                        {ZmanTableCellRightEng(astronomicalTimes.dusk)}
+                    </TableRow>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("Last light")}
+                        {ZmanTableCellRightEng(astronomicalTimes.last_light)}
+                    </TableRow>
+                    <TableRow>
+                        {ZmanTableCellLeftEng("Day length")}
+                        {ZmanTableCellRightEng(astronomicalTimes.day_length)}
+                    </TableRow>
+                </Table>
+                </View>
+                </div>)
+    }
+    
     function ZmanTableCellLeftEng(text?:string) {
         return (
             <TableCell sx={{py: 0.5, width: '80%', borderBottom: 'none', borderTop:"none" }} align="right">
@@ -260,6 +317,7 @@ export default function ZmanimDialog(props: ZmanimDialogProps) {
           </DialogTitle>
             {renderLanguage()}
             {renderZmanim()}
+            {renderAstronomicalTimes()}
         </Dialog>
       );
 }

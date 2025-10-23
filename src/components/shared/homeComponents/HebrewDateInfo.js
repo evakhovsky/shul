@@ -25,12 +25,11 @@ export function HebrewDayInfo({format}) {
     const [dayString, setDayString] = useState('');
     const [zmanimString, setZmanimString] = useState('');
     const [showZmanimDlg, setShowZmanimDlg] = useState(false);
-    const [zmanim, setZmanim] = useState('');
-    const [language, setLanguage] = useState('Hebrew');
-    const [astronomicalTimes, setAstronomicalTimes] = useState(null);
+    const [language, setLanguage] = useState('English');
     const [key, setKey] = useState(0); // Initial key for rerender
     const [zmanimTS, setZmanimTS] = useState({});
-
+    const [astronomicalTimesTS, setAstronomicalTimesTS] = useState({});
+    
     const populateZmanim = useCallback(async (date) => {
         let zmanim = await hebcalAPIservice.getDateZmanim(formatDayDate(date));
         if(!zmanim){
@@ -39,20 +38,11 @@ export function HebrewDayInfo({format}) {
 
         //console.log(zmanim);
         unpackZmanimforTypeScript(zmanim);
-
-        setZmanim(zmanim);
-        setZmanimString(zmanim.jDayZmanimString);
     }, [])
 
     const unpackZmanimforTypeScript = (zmanim) => {
-            console.log('***');        
-            console.log(zmanim);
-            console.log(zmanim.alotHaShachar);
-            console.log('***');
-
             const zmanimData = {
                 chatzotNight: zmanim.chatzotNight,
-                chatzotNightTime: zmanim.chatzotNightTime,
                 chatzotNightTime: zmanim.chatzotNightTime,
                 alotHaShachar: zmanim.alotHaShachar,
                 alotHaShacharTime: zmanim.alotHaShacharTime,
@@ -105,14 +95,28 @@ export function HebrewDayInfo({format}) {
             setZmanimTS(zmanimData);
     }
 
+    const unpackAstronomicalTimesforTypeScript = (times) => {
+        const timesData = {
+            sunrise:times.results.sunrise,
+            sunset:times.results.sunset,
+            dawn:times.results.dawn,
+            dusk:times.results.dusk,
+            first_light:times.results.first_light,
+            last_light:times.results.last_light,
+            solar_noon:times.results.solar_noon,
+            day_length:times.results.day_length
+        }
+
+        setAstronomicalTimesTS(timesData);
+    }
+
     const populateAstronomicalTimes = useCallback(async (date) => {
         let astronomicalTimes = await hebcalAPIservice.getAstronomicalTimes(formatDayDate(date));
         if(!astronomicalTimes){
             return;
         }
 
-        console.log(astronomicalTimes)
-        setAstronomicalTimes(astronomicalTimes)
+        unpackAstronomicalTimesforTypeScript(astronomicalTimes);
     }, [])
 
     React.useEffect(() => {
@@ -225,7 +229,8 @@ export function HebrewDayInfo({format}) {
                              zmanim={zmanimTS}
                              currentDate={gregorianDate}
                              onSwitchLanguage={onSwitchLanguage}
-                             language={language} />
+                             language={language}
+                             astronomicalTimes={astronomicalTimesTS} />
     }
 
     const onSwitchLanguage = () => {
