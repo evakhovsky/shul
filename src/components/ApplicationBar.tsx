@@ -179,6 +179,9 @@ export default function ApplicationBar(props: Props) {
       case "Home":
         navigate(routesMap.home);
         break;
+      case "Donate":
+        navigate(routesMap.paypal);
+        break;
     }
   }
 
@@ -283,7 +286,7 @@ export default function ApplicationBar(props: Props) {
         </StyledMenu>
             {renderDesktopMenuButton("Home", handleMenuButtonClick)}
             {renderDesktopMenuButton("Schedule", () => {})}
-            {renderDesktopMenuButton("Donate", () => {})}
+            {renderDesktopMenuButton("Donate", handleMenuButtonClick)}
             {renderDesktopMenuButton("Post", handleMenuButtonClick)}
             {renderLoginMenuButton()}
             {renderDesktopMenuButton("Help", () => {})}

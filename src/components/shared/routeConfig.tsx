@@ -9,7 +9,9 @@ export const routesMap = {
     registerConfirmation: "/registerConfirmation",
     forgotCredentials: '/forgotCredentials',
     passwordReset: '/passwordReset',
-    passwordResetWasSent: '/passwordResetWasSent'
+    passwordResetWasSent: '/passwordResetWasSent',
+    paypal: "/paypal",
+    payPalConfirm: "/payPalConfirm"
   };
 
 export class RouteConfig implements IRouteConfig {
