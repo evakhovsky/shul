@@ -35,7 +35,7 @@ function PayPal() {
   const [approvedOrderDetails, setApprovedOrderDetails] = useState({});
   const [isConfirmSubscription, setIsConfirmSubscription] = useState(false);
   const [subscriptionID, setSubscriptionID] = useState('');
-  const [purposesArray, setPurposesArray] = useState([]);
+  const [suggestedAmouns, setSuggestedAmouns] = useState([]);
 
   const defaultOptions = useMemo(() => {
     const options = [
@@ -66,13 +66,19 @@ function PayPal() {
         var lclOptions = await utilService.getVariableForEntity('PayPal', 'PurposeBox');
         if(lclOptions !== undefined && lclOptions !== null && lclOptions.length > 1){
           jsonObj = JSON.parse(lclOptions);
-          const keyValueObjects = Object.entries(jsonObj).map(([key, value]) => ({ key, value }));
-          setPurposesArray(keyValueObjects);
-          console.log('.....................');
-          console.log(keyValueObjects);
-          console.log('keyValueObjects');
-          console.log(lclOptions)
           setPurposes(jsonObj);          
+        }
+
+        try{
+          var lclSuggestedAmount = await utilService.getVariableForEntity('PayPal', 'SuggestedAmountBox');  
+          var jsonSuggestedAmount = JSON.parse(lclSuggestedAmount);
+          const keyValueObjects = Object.entries(jsonSuggestedAmount).map(([key, value]) => ({ key, value }));
+          setSuggestedAmouns(keyValueObjects);
+          console.log('SuggestedAmount');
+          console.log(keyValueObjects);
+          console.log('keyValueObjectsSuggestedAmount');
+        } catch (ex) {
+          console.log(ex);          
         }
 
         try{
@@ -219,7 +225,7 @@ function PayPal() {
         return (
           <View style={styles.centerViewSmallDonation}>
               <label style={{color: "red"}}><b>Unfortunately, your donation is too small to be accepted electronically</b></label>
-              <Text style={{color: "blue", textAlign: 'center', marginBottom: '10px', color: "#B85A46"}}>This is due to PayPal high percentage fees charged for small transactions. Please enter an amount equal or larger than $6</Text>
+              <Text style={{textAlign: 'center', marginBottom: '10px', color: "#B85A46"}}>This is due to PayPal high percentage fees charged for small transactions. Please enter an amount equal or larger than $6</Text>
           </View>
         );
       }
@@ -392,7 +398,7 @@ function PayPal() {
               value={' '}
             >
               <option value={' '}>{' '}</option>
-              {purposesArray.map(item  => (                
+              {suggestedAmouns.map(item  => (                
                 <option key={item.value.value} value={item.value.value}>
                 {item.value.label}
                 </option>
@@ -544,7 +550,7 @@ function PayPal() {
     return <Navigate
       to={{
           pathname: "/payPalConfirmSubscription",
-          search: "?amount=" + donationValue + "&purpose=" + purpose + "&subscriptionID=" + subscriptionID + "&currency_code=" + "USD" + "&isMonthly=" + isRecurringMonthly + "&isYearly=" + isRecurringYearly,
+          search: "?amount=" + donationValue + "&purpose=" + purpose + "&subscriptionID=" + subscriptionID + "&currency_code=USD&isMonthly=" + isRecurringMonthly + "&isYearly=" + isRecurringYearly,
           state: { referrer: "currentLocation" }
         }}
       />      
