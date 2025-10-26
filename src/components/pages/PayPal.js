@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-//import {PayPalButton} from "react-paypal-button-v2"
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import './PayPal.css';
 import CurrencyInput from 'react-currency-input-field';
@@ -30,6 +29,8 @@ function PayPal() {
   const [donatePhysicalAddress, setDonatePhysicalAddress] = useState(null);
   const [isOnPayPalApprove, setOnPayPalApprove] = useState(false);
   const [approvedOrderDetails, setApprovedOrderDetails] = useState({});
+  const [isConfirmSubscription, setIsConfirmSubscription] = useState(false);
+  const [subscriptionID, setSubscriptionID] = useState('');
 
   const defaultOptions = useMemo(() => {
     const options = [
@@ -120,32 +121,15 @@ function PayPal() {
   const handlePriceChange = async(value) => {
     setDonationValue(value);
     setFractionalSubscription(false);
+    setIsDonationTooSmall(false);
 
     if(!value || value.trim() === ""){
       setIsDonationEmpty(true);
-      setIsDonationValueValid(false);
+      setIsDonationValueValid(false);      
       return;
     }
 
     setIsDonationEmpty(false);
-
-    const donation = Number(value);
-    if(donation > 0 && donation < 1)
-    {
-      setIsDonationValueValid(false);
-      setIsDonationTooSmall(true);
-      return;
-    }
-
-    if(donation < 1)
-    {
-      setIsDonationValueValid(false);
-      setIsDonationTooSmall(false);
-      return;
-    }
-
-    setIsDonationValueValid(true);
-    setIsDonationTooSmall(false);
   }
 
   const handleOrderClicked = event => {
@@ -204,6 +188,10 @@ function PayPal() {
       flex: 1,
       flexDirection: "row",
       justifyContent: "center"
+    },
+    centerViewSmallDonation: {
+      flex: 1,
+      justifyContent: "center"
     }
 });
 
@@ -219,8 +207,9 @@ function PayPal() {
 
       if(isDonationTooSmall){
         return (
-          <View style={styles.centerViewTop}>
-              <div><label style={{color: "red"}}><b>Unfortunately, your donation is too small to be accepted electronically</b></label></div>            
+          <View style={styles.centerViewSmallDonation}>
+              <label style={{color: "red"}}><b>Unfortunately, your donation is too small to be accepted electronically</b></label>
+              <Text style={{color: "blue", textAlign: 'center', marginBottom: '10px', color: "#B85A46"}}>This is due to PayPal high percentage fees charged for small transactions. Please enter an amount equal or larger than $6</Text>
           </View>
         );
       }
@@ -238,56 +227,52 @@ function PayPal() {
     }
 
     return;
-}
+  }
+
+  const handleCurrencyInputBlur = (event) => {
+    console.log('Value on blur:', event.target.value);
+
+    const donation = Number(donationValue);
+    if(donation > 0 && donation < 6)
+    {
+      setIsDonationValueValid(false);
+      setIsDonationTooSmall(true);
+      return;
+    }
+
+    if(donation < 1)
+    {
+      setIsDonationValueValid(false);
+      setIsDonationTooSmall(false);
+      return;
+    }
+
+    setIsDonationValueValid(true);
+    setIsDonationTooSmall(false);
+  };
 
   const renderCurrencyInput = () => {
-    if(isDonationTooSmall){
-      return (
-        <View style={styles.centerViewTop}>
-          <View style={styles.centerViewBelow}>
-            <CurrencyInput
+    var donation = donationValue;
+    if(!donation){
+      donation = '';
+    }
+
+    return (
+      <View style={styles.centerViewTop}>
+        <View style={styles.centerViewBelow}>
+          <CurrencyInput
             id="input-example"
             name="input-name"
             placeholder="Amount"
             decimalsLimit={2}
+            value={donation}
             prefix="$"
-            value={donationValue}
-            onValueChange={handlePriceChange}/>
-          </View>
+            onValueChange={handlePriceChange}
+            onBlur={handleCurrencyInputBlur}/>
         </View>
-      );
-    }
-
-    if(!donationValue){
-      return (<View style={styles.centerViewTop}>
-        <View style={styles.centerViewBelow}>
-          <CurrencyInput
-          id="input-example"
-          name="input-name"
-          placeholder="Amount"
-          decimalsLimit={2}
-          prefix="$"
-          value={''}
-          onValueChange={handlePriceChange}
-          />
-        </View>
-        </View>);
-    }
-
-    return (<View style={styles.centerViewTop}>
-      <View style={styles.centerViewBelow}>
-        <CurrencyInput
-          id="input-example"
-          name="input-name"
-          placeholder="Amount"
-          decimalsLimit={2}
-          value={donationValue}
-          prefix="$"
-          onValueChange={handlePriceChange}
-        />
-        </View>
-      </View>);
-}
+      </View>
+    );
+  }
 
   const handleAmountSelection = async (amount) => {
     console.log('amount ' + amount);
@@ -442,29 +427,38 @@ function PayPal() {
     );
   }
 
+  const handleSubscriptionSuccess = (data) => {
+    setIsConfirmSubscription(true);
+    setSubscriptionID(data.subscriptionID);
+  }
+
   const renderPayPalButtons = () => {
-    return (
+    if(!isRecurring){
+      return (
       <View style={{ flex: 1, justifyContent: "center", flexDirection: "row" }}>
         <PayPalButtons
-            key='124'
+            key='123'
             style={{ layout: "vertical", color: "silver", shape: "pill", size: "responsive", width: "50%" }}
             options={{intent: "donation"}}
             shippingPreference="NO_SHIPPING"
             currency = "USD"
             createOrder={paypalCreateOrder}
+            onApprove={payPalOnApprove}
+            catchError={paypalOnError}
+            onError={paypalOnError}
+            onCancel={paypalOnError}
+            onClick={handleOrderClicked}
         />
       </View>
-    );
-    /*if(isRecurring){
-      console.log('recurring');
-      return (
-        <View style={{ flex: 1, justifyContent: "center", flexDirection: "row" }}>
-          <PayPalButton
-            key='123'
-            style={{color: "silver", shape: "pill", size: "responsive", width: "50%"}}
-                options={{
-                  intent: "donation"
-                }}
+      );
+    }
+
+    return (
+      <View style={{ flex: 1, justifyContent: "center", flexDirection: "row" }}>
+        <PayPalButtons
+            key='124'
+            style={{ layout: "vertical", color: "silver", shape: "pill", size: "responsive", width: "50%" }}
+            options={{intent: "subscription"}}
             NOSHIPPING="1"
             currency = "USD"
             createSubscription={paypalSubscribe}
@@ -472,28 +466,10 @@ function PayPal() {
             onError={paypalOnError}
             onCancel={paypalOnError}
             onClick={handleOrderClicked}
-            />
-        </View>);
-    }
-    console.log('non recurring');
-    return (
-      <View style={{ flex: 1, justifyContent: "center", flexDirection: "row" }}>
-        <PayPalButton
-        key='124'
-        style={{color: "silver", shape: "pill", size: "responsive", width: "50%"}}
-            options={{
-              intent: "donation"
-            }}
-              shippingPreference="NO_SHIPPING"
-        currency = "USD"
-        createOrder={paypalCreateOrder}
-        onApprove={payPalOnApprove}
-        catchError={paypalOnError}
-        onError={paypalOnError}
-        onCancel={paypalOnError}
-        onClick={handleOrderClicked}
+            onApprove={handleSubscriptionSuccess}
         />
-        </View>);*/
+      </View>
+    );
   }
 
   const paypalOnError = (err) => {
@@ -511,13 +487,27 @@ function PayPal() {
 
       return <Navigate
       to={{
-        pathname: "/payPalConfirm",
-        search: "?name=" + approvedOrderDetails.payer.name.given_name + "&purpose=" + purpose + "&amount=" + amount + "&currency_code=" + currency_code,
-        state: { referrer: "currentLocation" }
-      }}
-    />
+          pathname: "/payPalConfirm",
+          search: "?name=" + approvedOrderDetails.payer.name.given_name + "&purpose=" + purpose + "&amount=" + amount + "&currency_code=" + currency_code,
+          state: { referrer: "currentLocation" }
+        }}
+      />
     }
-}
+  }
+
+  const renderPayPalOnSubscriptionApprove = () => {
+    if(!isConfirmSubscription){
+      return;
+    }
+
+    return <Navigate
+      to={{
+          pathname: "/payPalConfirmSubscription",
+          search: "?amount=" + donationValue + "&purpose=" + purpose + "&subscriptionID=" + subscriptionID + "&currency_code=" + "USD" + "&isMonthly=" + isRecurringMonthly + "&isYearly=" + isRecurringYearly,
+          state: { referrer: "currentLocation" }
+        }}
+      />      
+  }
 
   const payPalOnApprove = (data, actions) =>{
     // Capture the funds from the transaction
@@ -536,40 +526,6 @@ function PayPal() {
         })
       });
     });
-  }
-
-  const createOrderPayPal = async (data, actions) => {
-    try {
-            const response = await fetch("/api/create-paypal-order", { // Your backend endpoint
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    // Pass any necessary order details to your backend
-                    items: [
-                        {
-                            name: "Example Product",
-                            unit_amount: {
-                                currency_code: "USD",
-                                value: "10.00",
-                            },
-                            quantity: "1",
-                        },
-                    ],
-                    amount: {
-                        currency_code: "USD",
-                        value: "10.00",
-                    },
-                }),
-            });
-
-            const order = await response.json();
-            return order.id; // Return the order ID received from your backend
-        } catch (error) {
-            console.error("Error creating PayPal order:", error);
-            // Handle error appropriately, e.g., show an error message to the user
-        }
   }
 
   const paypalCreateOrder = (data, actions) => {
@@ -618,7 +574,8 @@ function PayPal() {
       return;
     }
 
-    let planID = 'P-1RT872045T645393VMFGL2IQ';
+    //let planID = 'P-1RT872045T645393VMFGL2IQ';
+    let planID = 'P-4KS08521VU8227947ND7FCSY';
     if(SHUL === 'MD'){
       planID = isRecurringMonthly ? 'P-8W1837729U1811522MFGPGEA' : 'P-39546188XP231584XMGP6K7I';
     }
@@ -628,13 +585,16 @@ function PayPal() {
     }
 
     console.log('donation is valid ' + donationValue + ' pland id : ' + planID);
-    return actions.subscription.create({
+
+    let subscriptionDetails = actions.subscription.create({
       plan_id: planID,
       quantity: Number(donationValue),
       application_context: {
         shipping_preference: 'NO_SHIPPING'
       }
     });
+
+    return subscriptionDetails;
   };    
 
   const isDecimal = (str) => {
@@ -779,6 +739,7 @@ function PayPal() {
       {renderPhysicalAddress()}
       {renderStatusBar()}
       {renderPayPalOnApprove()}
+      {renderPayPalOnSubscriptionApprove()}
     </div>
   );
 }
