@@ -379,6 +379,10 @@ function PayPal() {
             </View>);
   }
 
+  const handleSuggestedAmountChange = (event) => {
+    console.log(Number(event.target.value));
+  };
+
   const renderSuggestedAmounts = () => {
     return (
       <View style={{flex: 0.5, flexDirection: "row", justifyContent:"center",
@@ -396,6 +400,7 @@ function PayPal() {
                 id: 'uncontrolled-native',
               }}
               value={' '}
+              onChange={handleSuggestedAmountChange}
             >
               <option value={' '}>{' '}</option>
               {suggestedAmouns.map(item  => (                
