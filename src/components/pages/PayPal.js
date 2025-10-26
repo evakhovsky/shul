@@ -10,6 +10,10 @@ import { View, SafeAreaView, StyleSheet, Text, TextInput } from 'react-native';
 import {Link } from "react-router-dom";
 import utilService from '../shared/services/utilservice';
 import { Navigate } from "react-router-dom";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
 
 const SHUL = process.env.REACT_APP_SHUL;
 
@@ -31,6 +35,7 @@ function PayPal() {
   const [approvedOrderDetails, setApprovedOrderDetails] = useState({});
   const [isConfirmSubscription, setIsConfirmSubscription] = useState(false);
   const [subscriptionID, setSubscriptionID] = useState('');
+  const [purposesArray, setPurposesArray] = useState([]);
 
   const defaultOptions = useMemo(() => {
     const options = [
@@ -61,8 +66,13 @@ function PayPal() {
         var lclOptions = await utilService.getVariableForEntity('PayPal', 'PurposeBox');
         if(lclOptions !== undefined && lclOptions !== null && lclOptions.length > 1){
           jsonObj = JSON.parse(lclOptions);
-
-          setPurposes(jsonObj);
+          const keyValueObjects = Object.entries(jsonObj).map(([key, value]) => ({ key, value }));
+          setPurposesArray(keyValueObjects);
+          console.log('.....................');
+          console.log(keyValueObjects);
+          console.log('keyValueObjects');
+          console.log(lclOptions)
+          setPurposes(jsonObj);          
         }
 
         try{
@@ -338,7 +348,7 @@ function PayPal() {
                 </View>
             );
     }
-
+    
     return (<View style={{flex: 1, flexDirection: "row", justifyContent:"center",
               // Fixes the overlapping problem of the component
               zIndex: 1000}}>
@@ -361,6 +371,37 @@ function PayPal() {
                   </Dropdown>  
               </SafeAreaView>                            
             </View>);
+  }
+
+  const renderSuggestedAmounts = () => {
+    return (
+      <View style={{flex: 0.5, flexDirection: "row", justifyContent:"center",
+        // Fixes the overlapping problem of the component
+        zIndex: 1000}}>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+              Suggested Donations
+            </InputLabel>
+            <NativeSelect
+              defaultValue={''}
+              inputProps={{
+                name: 'age',
+                id: 'uncontrolled-native',
+              }}
+              value={' '}
+            >
+              <option value={' '}>{' '}</option>
+              {purposesArray.map(item  => (                
+                <option key={item.value.value} value={item.value.value}>
+                {item.value.label}
+                </option>
+              ))}
+            </NativeSelect>
+          </FormControl>
+        </Box>
+      </View>
+  );
   }
 
   const handleOtherPurposeChange = async(value) => {
@@ -722,7 +763,8 @@ function PayPal() {
         {renderPurposeValidLabel()}
         {renderDonationIsTooSmallLabel()}
         {renderFractionalSubscription()}            
-        {renderSuggestedDonations()}            
+        {renderSuggestedDonations()}
+        {renderSuggestedAmounts()}
       <div className="center">
       <div id="wrapper">
       <div id="parent">
