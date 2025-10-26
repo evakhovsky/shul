@@ -745,4 +745,3 @@ function PayPal() {
 }
 
 export default PayPal
-
