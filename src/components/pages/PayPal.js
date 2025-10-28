@@ -2,11 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import './PayPal.css';
 import CurrencyInput from 'react-currency-input-field';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Select from 'react-select'
 import useViewport from '../shared/ViewportProvider'
 import {Table, TableRow, TableCell} from '@mui/material';
-import { View, SafeAreaView, StyleSheet, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Text, TextInput } from 'react-native';
 import {Link } from "react-router-dom";
 import utilService from '../shared/services/utilservice';
 import { Navigate } from "react-router-dom";
@@ -18,7 +17,7 @@ import NativeSelect from '@mui/material/NativeSelect';
 const SHUL = process.env.REACT_APP_SHUL;
 
 function PayPal() {
-  const [donationValue, setDonationValue] = useState('');
+  const [donationValue, setDonationValue] = useState(' ');
   const [isDonationValueValid, setIsDonationValueValid] = useState(true);
   const [isFractionalSubscription, setFractionalSubscription] = useState(false);
   const [isDonationTooSmall, setIsDonationTooSmall] = useState(false);
@@ -269,7 +268,7 @@ function PayPal() {
 
   const renderCurrencyInput = () => {
     var donation = donationValue;
-    if(!donation){
+    if(!donation || donation === ' '){
       donation = '';
     }
 
@@ -288,13 +287,6 @@ function PayPal() {
         </View>
       </View>
     );
-  }
-
-  const handleAmountSelection = async (amount) => {
-    console.log('amount ' + amount);
-    setDonationValue(amount);
-    setIsDonationEmpty(false);
-    setIsDonationTooSmall(false);
   }
 
   const handlePurposeChange = value => {
@@ -323,64 +315,13 @@ function PayPal() {
     setIsRecurring(value);
   };
 
-  const renderSuggestedDonations = () => {
-    if(SHUL === 'OS'){
-      return (
-        <View style={{flex: 1, flexDirection: "row", justifyContent:"center",
-          // Fixes the overlapping problem of the component
-          zIndex: 1000}}>
-          <SafeAreaView style={{flex: 0.5, 
-            // Fixes the overlapping problem of the component
-            zIndex: 1}}>
-                  <Dropdown>
-                    <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="sm">
-                      Suggested donations
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => handleAmountSelection(18)}>Chai: $18.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(26)}>Membership: $26.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(36)}>2 x Chai: $36.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(54)}>3 x Chai: $54.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(72)}>4 x Chai: $72</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(90)}>5 x Chai: $90</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(120)}>Ad Meah veEsrim: $120</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(150)}>Sponsor a kiddush $150</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(180)}>10 x Chai: $180</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(360)}>20 x Chai: $360</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  </SafeAreaView>
-                </View>
-            );
-    }
-    
-    return (<View style={{flex: 1, flexDirection: "row", justifyContent:"center",
-              // Fixes the overlapping problem of the component
-              zIndex: 1000}}>
-              <SafeAreaView style={{flex: 0.5, 
-                // Fixes the overlapping problem of the component
-                zIndex: 1}}>
-                  <Dropdown>
-                    <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="sm">
-                      Suggested donations
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => handleAmountSelection(18)}>$18.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(36)}>$36.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(72)}>$72.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(160)}>Sponsor a kiddush $160.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(180)}>$180.00</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleAmountSelection(360)}>$360.00</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>  
-              </SafeAreaView>                            
-            </View>);
-  }
-
   const handleSuggestedAmountChange = (event) => {
-    console.log(Number(event.target.value));
+    if(Number.isFinite(Number(event.target.value))){
+      setDonationValue(event.target.value);
+      return;
+    }
+
+    setDonationValue(' ');
   };
 
   const renderSuggestedAmounts = () => {
@@ -399,7 +340,7 @@ function PayPal() {
                 name: 'age',
                 id: 'uncontrolled-native',
               }}
-              value={' '}
+              value={donationValue}
               onChange={handleSuggestedAmountChange}
             >
               <option value={' '}>{' '}</option>
@@ -774,7 +715,6 @@ function PayPal() {
         {renderPurposeValidLabel()}
         {renderDonationIsTooSmallLabel()}
         {renderFractionalSubscription()}            
-        {renderSuggestedDonations()}
         {renderSuggestedAmounts()}
       <div className="center">
       <div id="wrapper">
