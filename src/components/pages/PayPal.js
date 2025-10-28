@@ -57,7 +57,7 @@ function PayPal() {
   }, []);
 
   React.useEffect(() => {
-    utilService.markPage();
+    //utilService.markPage();
     
     async function fetchData() {
       try{
@@ -246,12 +246,18 @@ function PayPal() {
 
   const handleCurrencyInputBlur = (event) => {
     console.log('Value on blur:', event.target.value);
+    verifyDonationAmount();
+  }
 
-    const donation = Number(donationValue);
+  const verifyDonationAmount = (donationToVerify = null) => {
+    const donationStr = donationToVerify ?? donationValue;
+    const donation = Number(donationStr);
+
     if(donation > 0 && donation < 6)
     {
       setIsDonationValueValid(false);
       setIsDonationTooSmall(true);
+      console.log('setting invalid donation');
       return;
     }
 
@@ -259,12 +265,14 @@ function PayPal() {
     {
       setIsDonationValueValid(false);
       setIsDonationTooSmall(false);
+      console.log('setting invalid donation');
       return;
     }
 
     setIsDonationValueValid(true);
     setIsDonationTooSmall(false);
-  };
+    console.log('setting valid donation');
+  }
 
   const renderCurrencyInput = () => {
     var donation = donationValue;
@@ -318,6 +326,7 @@ function PayPal() {
   const handleSuggestedAmountChange = (event) => {
     if(Number.isFinite(Number(event.target.value))){
       setDonationValue(event.target.value);
+      verifyDonationAmount(event.target.value);
       return;
     }
 
@@ -328,11 +337,11 @@ function PayPal() {
     return (
       <View style={{flex: 0.5, flexDirection: "row", justifyContent:"center",
         // Fixes the overlapping problem of the component
-        zIndex: 1000}}>
+        zIndex: 1000, marginBottom: '20px'}}>
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
             <InputLabel variant="standard" htmlFor="uncontrolled-native">
-              Suggested Donations
+              Suggested Contributions
             </InputLabel>
             <NativeSelect
               defaultValue={''}
