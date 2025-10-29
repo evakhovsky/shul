@@ -5,7 +5,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const SHUL = process.env.REACT_APP_SHUL;
 
 class AuthenticationService implements IAuthenticationService {
-  async login(username: string, password: string ): Promise<IUserLogin>{
+  public async login(username: string, password: string ): Promise<IUserLogin>{
     localStorage.removeItem('token');
     const data = JSON.stringify({ password: password, userID: username, source: SHUL});
     const response = 
@@ -13,27 +13,28 @@ class AuthenticationService implements IAuthenticationService {
             'Content-Type': 'application/json',
           }})
           .then(function(response) {      
-              console.log(response);              
               return response.json();
             }).then(function(data) {
-              console.log(data);
               if(!data.status || !data.token)
               {                
                 return data;
               }
     
             const user = jwtDecode(data.token); // decode your token here
-            console.log('user');
+            console.log('user is logged in');
             console.log(user);
 
             localStorage.setItem('token', data.token);
+
+            console.log('dispatched event');
 
             return data;
           }).catch(function(error) {
               console.log(error);
           });
 
-    return response;
+          this.sendRefreshEvent();
+          return response;
   }
 
     public isUserLoggedIn = () : boolean  => {
@@ -59,7 +60,6 @@ class AuthenticationService implements IAuthenticationService {
             return true;
         }
 
-        console.log(resultToken.FirstName);        
         return Date.now() > resultToken.exp  * 1000;
     }
 
@@ -81,6 +81,9 @@ class AuthenticationService implements IAuthenticationService {
 
     public logout = () : void => {
         localStorage.removeItem('token');
+        console.log('removing token');
+
+        this.sendRefreshEvent();
     }
 
     public async resetPassword(email: string) : Promise<string>{
@@ -139,6 +142,15 @@ class AuthenticationService implements IAuthenticationService {
       return result;
     }
 
+    sendRefreshEvent = () : void => {
+      const customEvent = new CustomEvent('refreshEvent', {
+          detail: { message: 'refresh' },
+          bubbles: true, // Allow the event to bubble up the DOM
+          composed: true, // Allow the event to cross shadow DOM boundaries
+        });
+        window.dispatchEvent(customEvent);
+        
+    }
 }
 
 export const authenticationService = new AuthenticationService();

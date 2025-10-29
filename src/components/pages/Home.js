@@ -7,10 +7,33 @@ import rb from './images/rb.jpg'
 import './Home.css';
 import { Link } from "react-router-dom";
 import hebrewDayInfo from '../shared/homeComponents/HebrewDateInfo'
+import { authenticationService } from '../shared/services/Authenticationservice';
 
 const SHUL = process.env.REACT_APP_SHUL;
 
 function Home() {
+    const [key, setKey] = useState(0); // Initial key for rerender
+
+    useEffect(() => {
+        const handleCustomEvent = (event) => {
+            console.log('on custom event');
+            console.log('Custom event received in JavaScript component:', event.detail.message);            
+            forceDatePickerRerender();
+        };
+
+        console.log('registering custom event handler');
+
+        window.addEventListener('refreshEvent', handleCustomEvent);
+
+        return () => {
+            window.removeEventListener('loginEvent', handleCustomEvent);
+        };
+    }, []);
+
+    function forceDatePickerRerender() {
+        setKey(prevKey => prevKey + 1); // Update the key to force re-render
+    }
+
     const [entity, setEntity] = useState(false);
     const [address, setAddress] = useState(false);
 
@@ -24,29 +47,41 @@ function IsMobile() {
     return width < breakpoint;
 }
 
-const renderScheduleLink = () => {
-    return <Link to="/shulSchedule">Schedule</Link>;
-}
-
 const renderHebrewDay = () => {
     return (<div>
         <hebrewDayInfo.HebrewDayInfo format="desktop" />
     </div>);
 }
 
-function MobileHome(props) {
-    const [showLogoPicture, setShowLogoPicture] = useState(false);
+function renderWelcomeName() {
+    if (!authenticationService.isUserLoggedIn()) {
+        return;
+    }
 
+    return <h4>Hello <span style={{ color: "blue" }}>{authenticationService.getUserFirstName()}</span></h4>;
+}
+
+function MobileHome(props) {    
     return (<div className='home'>
                 <View style={{ justifyContent: "center" }}>
                     {renderHebrewDay()}
                 </View>
                 <div className="centerText">
                 </div>
-                <HousePic showLogoPicture={showLogoPicture} />
+                <HousePic showLogoPicture={true} />
                 <br></br>
             </div>
     )
+}
+
+const renderMemo = () => {
+    return (
+        <div className="centerText">
+            <Text>
+                Please click on the Donate link below to help the shul
+                </Text>
+        </div>
+    );
 }
 
 function DesktopHome(props) {
@@ -58,14 +93,18 @@ function DesktopHome(props) {
 
     return (
         <div>
-            <div className="centerText">
-                {renderScheduleLink()}
-            </div>
             <div className="flex-container">
                 {renderHebrewDay()}
             </div>
+            <div className="centerText">
+                {renderWelcomeName()}                
+            </div>
             <div className="flex-container">
                 <HousePic showLogoPicture={showLogoPicture} />
+            </div>
+            {renderMemo()}
+            <div className="centerText">
+                    <Link to="/paypal">Donate</Link>
             </div>
             <br></br>
         </div>
