@@ -182,10 +182,19 @@ export default function ApplicationBar(props: Props) {
       case "Donate":
         navigate(routesMap.paypal);
         break;
+      case "Your Donations":
+        navigate(routesMap.userDonations);
+        break;
     }
   }
 
   const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLButtonElement>) => void) => {
+    if(title === "Your Donations"){
+      if(!authenticationService.isUserLoggedIn()){
+        return;
+      }      
+    }
+
     return (<Button key={title} sx={{ color: '#fff' }} onClick={onclick}>
               {title}
             </Button>
@@ -286,6 +295,7 @@ export default function ApplicationBar(props: Props) {
         </StyledMenu>
             {renderDesktopMenuButton("Home", handleMenuButtonClick)}
             {renderDesktopMenuButton("Schedule", () => {})}
+            {renderDesktopMenuButton("Your Donations", handleMenuButtonClick)}
             {renderDesktopMenuButton("Donate", handleMenuButtonClick)}
             {renderDesktopMenuButton("Post", handleMenuButtonClick)}
             {renderLoginMenuButton()}

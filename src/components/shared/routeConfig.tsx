@@ -12,7 +12,8 @@ export const routesMap = {
     passwordResetWasSent: '/passwordResetWasSent',
     paypal: "/paypal",
     payPalConfirm: "/payPalConfirm",
-    payPalConfirmSubscription: "/payPalConfirmSubscription"
+    payPalConfirmSubscription: "/payPalConfirmSubscription",
+    userDonations: '/userDonations'
   };
 
 export class RouteConfig implements IRouteConfig {
