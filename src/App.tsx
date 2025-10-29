@@ -16,12 +16,21 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import PayPalConfirmSubscription from './components/pages/PayPalConfirmSubscription';
 
 function App() {
+  const getPaypClientID = ():string => {
+    const entity = process.env.REACT_APP_SHUL;
+    const clientIDPrefix = "REACT_APP_PAYPALCLIENTID_";
+    const clientIDEntry = clientIDPrefix + entity;
+    const clientID = process.env[clientIDEntry];
+    
+    return clientID ?? "";
+  }
+
   const initialOptions = {
-  clientId: "AZLWMj61WLqE6bxOwVbUlXsw1hiNZDDMDJRlQOqw54XJ9ktmQanKCSYcl-o2MT_7PCzFJ2zAR0GSsU-b", // Replace with your actual client ID (sandbox or production)
-  currency: "USD",
-  intent: "capture",
-  vault: "true",
-};
+    clientId: getPaypClientID(), // Replace with your actual client ID (sandbox or production)
+    currency: "USD",
+    intent: "capture",
+    vault: "true"
+  };
 
   return (
     <>
