@@ -217,8 +217,8 @@ export default function ApplicationBar(props: Props) {
       <Divider />
       <List>
           {renderMobileMenuListItem("Home")}
+          {renderMobileMenuListItem("Your Donations")}
           {renderMobileMenuListItem("Donate")}
-          {renderMobileMenuListItem("Post")}
           {renderMobileLoginMenuListItem()}
           {renderMobileMenuListItem("Help")}
       </List>
@@ -301,8 +301,7 @@ export default function ApplicationBar(props: Props) {
         </StyledMenu>
             {renderDesktopMenuButton("Home", handleMenuButtonClick)}
             {renderDesktopMenuButton("Your Donations", handleMenuButtonClick)}
-            {renderDesktopMenuButton("Donate", handleMenuButtonClick)}
-            {renderDesktopMenuButton("Post", handleMenuButtonClick)}
+            {renderDesktopMenuButton("Donate", handleMenuButtonClick)}            
             {renderLoginMenuButton()}
             {renderDesktopMenuButton("Help", () => {})}
           </Box>
