@@ -61,17 +61,12 @@ function renderWelcomeName() {
     return <h4>Hello <span style={{ color: "blue" }}>{authenticationService.getUserFirstName()}</span></h4>;
 }
 
-function MobileHome(props) {    
-    return (<div className='home'>
-                <View style={{ justifyContent: "center" }}>
-                    {renderHebrewDay()}
-                </View>
-                <div className="centerText">
-                </div>
-                <HousePic showLogoPicture={true} />
-                <br></br>
-            </div>
-    )
+function renderWelcomeHebrew() {
+    if (!authenticationService.isUserLoggedIn()) {
+        return <h5>!ברוכים הבאים</h5>;
+    }
+
+    return <h5>!ברוך הבא</h5>;
 }
 
 const renderMemo = () => {
@@ -82,6 +77,27 @@ const renderMemo = () => {
                 </Text>
         </div>
     );
+}
+
+function MobileHome(props) {    
+    return (<div className='home'>
+                <View style={{ justifyContent: "center" }}>
+                    {renderHebrewDay()}
+                </View>
+                <div className="centerText">
+                    {renderWelcomeName()}
+                    {renderWelcomeHebrew()}
+                </div>
+                <div className="centerText">
+                </div>
+                <HousePic showLogoPicture={true} />
+                    {renderMemo()}
+                <div className="centerText">
+                        <Link to="/paypal">Donate</Link>
+                </div>
+                <br></br>
+            </div>
+    )
 }
 
 function DesktopHome(props) {
@@ -97,7 +113,8 @@ function DesktopHome(props) {
                 {renderHebrewDay()}
             </div>
             <div className="centerText">
-                {renderWelcomeName()}                
+                {renderWelcomeName()}
+                {renderWelcomeHebrew()}
             </div>
             <div className="flex-container">
                 <HousePic showLogoPicture={showLogoPicture} />
