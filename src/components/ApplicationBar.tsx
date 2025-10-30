@@ -185,6 +185,9 @@ export default function ApplicationBar(props: Props) {
       case "Your Donations":
         navigate(routesMap.userDonations);
         break;
+      case "Profile":
+        navigate(routesMap.account);
+        break;
     }
   }
 
@@ -217,10 +220,11 @@ export default function ApplicationBar(props: Props) {
       <Divider />
       <List>
           {renderMobileMenuListItem("Home")}
+          {renderMobileMenuListItem("Profile")}
           {renderMobileMenuListItem("Your Donations")}
           {renderMobileMenuListItem("Donate")}
           {renderMobileLoginMenuListItem()}
-          {renderMobileMenuListItem("Help")}
+          {renderMobileMenuListItem("Contact Us")}
       </List>
     </Box>
   );
@@ -300,10 +304,11 @@ export default function ApplicationBar(props: Props) {
           </MenuItem>
         </StyledMenu>
             {renderDesktopMenuButton("Home", handleMenuButtonClick)}
+            {renderDesktopMenuButton("Profile", handleMenuButtonClick)}
             {renderDesktopMenuButton("Your Donations", handleMenuButtonClick)}
             {renderDesktopMenuButton("Donate", handleMenuButtonClick)}            
             {renderLoginMenuButton()}
-            {renderDesktopMenuButton("Help", () => {})}
+            {renderDesktopMenuButton("Contact Us", () => {})}
           </Box>
         </Toolbar>
       </AppBar>

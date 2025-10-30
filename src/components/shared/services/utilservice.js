@@ -86,7 +86,7 @@ async function modifyProfile(firstName,
         email: email, 
         address: address,
         jewishName: jewishName});
-    
+        
         let result = false;
 
         await fetch(SERVER_URL + 'api/SourceContact/ModifySourceContact', {  method: 'POST',  body: data, headers: {

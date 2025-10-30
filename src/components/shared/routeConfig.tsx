@@ -13,7 +13,8 @@ export const routesMap = {
     paypal: "/paypal",
     payPalConfirm: "/payPalConfirm",
     payPalConfirmSubscription: "/payPalConfirmSubscription",
-    userDonations: '/userDonations'
+    userDonations: '/userDonations',
+    account: "/account"
   };
 
 export class RouteConfig implements IRouteConfig {
