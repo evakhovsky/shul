@@ -235,6 +235,13 @@ export default function ApplicationBar(props: Props) {
     console.log('location.pathname');
     console.log(location.pathname);
     if(!routeConfig.isPublicRouter(location.pathname)){
+      switch(location.pathname){
+        case routesMap.userDonations:
+          if(authenticationService.isUserLoggedIn()){
+            return;
+          }
+      }
+      menuNavigate("Home");
       return;
     }
 

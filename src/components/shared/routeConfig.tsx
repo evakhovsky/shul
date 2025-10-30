@@ -18,8 +18,14 @@ export const routesMap = {
 
 export class RouteConfig implements IRouteConfig {
     public isPublicRouter(path: string) : boolean{
+        switch(path){
+          case routesMap.userDonations:
+          return false;
+
+        }
+
         return true;
-  }
+    }    
 };
 
 export const routeConfig = new RouteConfig();
