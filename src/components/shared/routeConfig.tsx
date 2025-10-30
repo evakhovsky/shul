@@ -21,7 +21,8 @@ export class RouteConfig implements IRouteConfig {
     public isPublicRouter(path: string) : boolean{
         switch(path){
           case routesMap.userDonations:
-          return false;
+          case routesMap.account:
+            return false;
 
         }
 

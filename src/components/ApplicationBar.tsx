@@ -126,7 +126,11 @@ export default function ApplicationBar(props: Props) {
     menuNavigate(event.currentTarget.innerText);
   }
 
-  const renderMobileMenuListItem = (title: string) => {
+  const renderMobileMenuListItem = (title: string, path: string) => {
+    if(!routeConfig.isPublicRouter(path) && !authenticationService.isUserLoggedIn()){
+      return;
+    }
+
     return (<ListItem key={title} disablePadding>
           <ListItemButton sx={{ textAlign: 'center' }}>
             <ListItemText primary={title} onClick={handleMobileMenuClick}/>
@@ -191,11 +195,9 @@ export default function ApplicationBar(props: Props) {
     }
   }
 
-  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLButtonElement>) => void) => {
-    if(title === "Your Donations"){
-      if(!authenticationService.isUserLoggedIn()){
-        return;
-      }      
+  const renderDesktopMenuButton = (title: string, onclick: (event: React.MouseEvent<HTMLButtonElement>) => void, path:string) => {
+    if(!routeConfig.isPublicRouter(path) && !authenticationService.isUserLoggedIn()){
+      return;
     }
 
     return (<Button key={title} sx={{ color: '#fff' }} onClick={onclick}>
@@ -219,12 +221,12 @@ export default function ApplicationBar(props: Props) {
       </Typography>
       <Divider />
       <List>
-          {renderMobileMenuListItem("Home")}
-          {renderMobileMenuListItem("Profile")}
-          {renderMobileMenuListItem("Your Donations")}
-          {renderMobileMenuListItem("Donate")}
+          {renderMobileMenuListItem("Home", routesMap.home)}
+          {renderMobileMenuListItem("Profile", routesMap.account)}
+          {renderMobileMenuListItem("Your Donations", routesMap.userDonations)}
+          {renderMobileMenuListItem("Donate", routesMap.paypal)}
           {renderMobileLoginMenuListItem()}
-          {renderMobileMenuListItem("Contact Us")}
+          {renderMobileMenuListItem("Contact Us", routesMap.register)}
       </List>
     </Box>
   );
@@ -240,6 +242,7 @@ export default function ApplicationBar(props: Props) {
     if(!routeConfig.isPublicRouter(location.pathname)){
       switch(location.pathname){
         case routesMap.userDonations:
+        case routesMap.account:
           if(authenticationService.isUserLoggedIn()){
             return;
           }
@@ -303,12 +306,12 @@ export default function ApplicationBar(props: Props) {
             More
           </MenuItem>
         </StyledMenu>
-            {renderDesktopMenuButton("Home", handleMenuButtonClick)}
-            {renderDesktopMenuButton("Profile", handleMenuButtonClick)}
-            {renderDesktopMenuButton("Your Donations", handleMenuButtonClick)}
-            {renderDesktopMenuButton("Donate", handleMenuButtonClick)}            
+            {renderDesktopMenuButton("Home", handleMenuButtonClick, routesMap.home)}
+            {renderDesktopMenuButton("Profile", handleMenuButtonClick, routesMap.account)}
+            {renderDesktopMenuButton("Your Donations", handleMenuButtonClick, routesMap.userDonations)}
+            {renderDesktopMenuButton("Donate", handleMenuButtonClick, routesMap.paypal)}            
             {renderLoginMenuButton()}
-            {renderDesktopMenuButton("Contact Us", () => {})}
+            {renderDesktopMenuButton("Contact Us", () => {}, routesMap.register)}
           </Box>
         </Toolbar>
       </AppBar>
