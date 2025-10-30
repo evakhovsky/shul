@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import authenticationService from '../shared/services/authentication.service'
 import './Account.css';
 import telephoneEntry from '../shared/TelephoneEntry'
-import Button from 'react-bootstrap/Button';
+import Button from '@mui/material/Button';
 import firstNameEntry from '../shared/FirstNameEntry'
 import lastNameEntry from '../shared/LastNameEntry'
 import { View } from 'react-native';
@@ -19,13 +19,13 @@ function Account() {
     const [isLastNameValid, setLastNameValid] = useState(true);
     const [telephone, setTelephone] = useState('');
     const [isTelephoneValid, setTelephoneValid] = useState(true);
-    const [address, setAddress] = useState('initial');
     const [jewishName, setJewishName] = useState('');
     const [isJewishNameValid, setJewishNameValid] = useState(true);
     const [email, setEmail] = useState('');
     const [userId, setUserId] = useState('');
     const [isUpdateError, setUpdateError] = useState(false);
     const [isShowMessageBox, setShowMessageBox] = useState(false);
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     React.useEffect(() => {
         async function fetchData() {
@@ -41,11 +41,11 @@ function Account() {
                 setLastName(lclAccount.lastName);
                 setTelephone(lclAccount.telephone);
                 setEmail(lclAccount.email);
-                setAddress(lclAccount.address);
                 setUserId(lclAccount.id);
                 setJewishName(lclAccount.jewishName);
                 if(lclAccount.firstName && lclAccount.firstName.length > 0){
                 setFirstNameValid(true);
+                setSelectedPlace({ label: lclAccount.address, value: lclAccount.address });
             }
         }
         fetchData();
@@ -78,11 +78,11 @@ function Account() {
 
     const submitChanges = async () => {
         setUpdateError(false);
-        console.log(address)
+        console.log(selectedPlace)
         const result = await utilService.modifyProfile(firstName,
             lastName,
             telephone,
-            address.label,
+            selectedPlace.label,
             jewishName,
             userId,
             email);
@@ -124,24 +124,21 @@ function Account() {
     }
 
     const renderPlacesAutoComplete = () => {
-        if(address === 'initial'){
-            return;
-        }
-        
-        console.log(address);
-        
         return(
-        <GooglePlacesAutocomplete
-            apiKey={"AIzaSyBxYdTbUh_Soo8vkiJQ6QhFlZ7kMH5aq5g"}
-            selectProps={{
-            defaultInputValue: address, // This sets the initial value
-            onChange: setAddress, // This updates the state when a place is selected
-            placeholder: "Enter an address",
-            // ... other selectProps
-        }}
-      // ... other props for GooglePlacesAutocomplete
-    />);
-        
+            <View style={{ flex: 0.5, marginLeft: 8, zIndex: 1000 }}>
+                <label><b>Address</b></label>
+                <GooglePlacesAutocomplete
+                    apiKey={"AIzaSyBxYdTbUh_Soo8vkiJQ6QhFlZ7kMH5aq5g"}
+                    selectProps={{
+                    onChange: setSelectedPlace, // This updates the state when a place is selected
+                    placeholder: "Enter an address",
+                    value: selectedPlace
+                    // ... other selectProps
+                }}
+                // ... other props for GooglePlacesAutocomplete
+                />
+            </View>
+        );        
     }
 
     const renderMessageBox = address => {
@@ -155,65 +152,30 @@ function Account() {
     }
 
         return <div>
-            <div className="smallLeftOffset">
-                <h4>
-                    Your Profile <span style={{color: "blue"}}>{initialFirstName}</span>
-                </h4>
-            </div>
-            <form>
-            <table >
-                <tbody>
+            <View style={{ flex: 0.5, marginLeft: 10 }}>
+                <View style={{ marginBottom: 25 }}>
+                    <h4>Your Profile <span style={{color: "blue"}}>{initialFirstName}</span></h4>
+                </View>                
                 <firstNameEntry.FirstNameInput onFirstNameChange={changeFirstName} name={firstName} controlsStyle="table"/>                    
-                <div>
                 <lastNameEntry.LastNameInput onLastNameChange={changeLastName} name={lastName}/>
-                </div>
-                <div>
-                    <tr>
-                    <td align="right">
-                        <div><label>Email</label></div>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td><label>{email}</label></td>
-                    </tr>
-                </div>
-                <telephoneEntry.TelephoneInput onTelephoneChange={changeTelephone} telephone={telephone} controlsStyle="table"/>
-                <div>
-                    <tr>
-                    <td align="right">
-                        <div><label><b>Address</b></label></div>
-                    </td>
-                    </tr>
-                </div>
-                </tbody>
-                </table >
+                <label>Email</label>
+                <td><label>{email}</label></td>
+                <View style={{ marginTop: 20 }}>
+                    <telephoneEntry.TelephoneInput onTelephoneChange={changeTelephone} telephone={telephone} controlsStyle="table"/>
+                </View>
+                {renderPlacesAutoComplete()}
+                <View style={{ marginTop: 20 }}>
+                    <lastNameEntry.LastNameInput onLastNameChange={changeJewishName} name={jewishName} labelText="Jewish Name - שם יהודי" applyRegularExpression={false}/>
+                </View>
+            </View>
+            <form>                        
+                {renderUpdateError()}                
+                <Button variant="contained" 
+                        style={{ marginLeft: 20, marginTop: 15 }}
+                        onClick={handleSubmit} 
+                        sx={{ display: 'inline-block' }}
+                        disabled = {!isFormValidated()}>Update</Button>
                 
-            <div className="smallLeftOffset">
-            {renderPlacesAutoComplete()}
-            <div className="gap-10"></div>
-            </div>            
-                <table>
-                    <tbody>
-                    <div>
-                        <lastNameEntry.LastNameInput onLastNameChange={changeJewishName} name={jewishName} labelText="Jewish Name - שם יהודי" applyRegularExpression={false}/>
-                    </div>
-                    <tr>
-                        <td>
-                            {renderUpdateError()}
-                        </td>
-                    </tr>
-                    <tr>
-                    <td>
-                        <div class="left">
-                            <Button onClick={handleSubmit} disabled = {!isFormValidated()}>Update</Button>
-                        </div>                        
-                    </td>
-                </tr>
-                    </tbody>
-                </table>
-
-                <div>
-            </div>          
         </form>
         {renderMessageBox()}
         </div>   
