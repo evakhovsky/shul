@@ -16,6 +16,8 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import PayPalConfirmSubscription from './components/pages/PayPalConfirmSubscription';
 import UserDonations from './components/pages/content/UserDonations';
 import Account from './components/pages/Account';
+import ContactUsComponent from './components/pages/ContactUs'
+import ContactUsSuccess from './components/pages/ContactUsSuccess'
 
 function App() {
   const getPaypClientID = ():string => {
@@ -54,6 +56,8 @@ function App() {
               <Route path={routesMap.payPalConfirmSubscription} element={<PayPalConfirmSubscription />} />
               <Route path={routesMap.userDonations} element={<UserDonations />} />
               <Route path={routesMap.account} element={<Account />} />
+              <Route path={routesMap.contactUs} element={<ContactUsComponent />} />
+              <Route path={routesMap.contactUsSuccess} element={<ContactUsSuccess />} />
             </Routes>
           </Router>
         </AppBarProvider>

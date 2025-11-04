@@ -192,6 +192,9 @@ export default function ApplicationBar(props: Props) {
       case "Profile":
         navigate(routesMap.account);
         break;
+      case "Contact Us":
+        navigate(routesMap.contactUs);
+        break;
     }
   }
 
@@ -226,7 +229,7 @@ export default function ApplicationBar(props: Props) {
           {renderMobileMenuListItem("Your Donations", routesMap.userDonations)}
           {renderMobileMenuListItem("Donate", routesMap.paypal)}
           {renderMobileLoginMenuListItem()}
-          {renderMobileMenuListItem("Contact Us", routesMap.register)}
+          {renderMobileMenuListItem("Contact Us", routesMap.contactUs)}
       </List>
     </Box>
   );
@@ -311,7 +314,7 @@ export default function ApplicationBar(props: Props) {
             {renderDesktopMenuButton("Your Donations", handleMenuButtonClick, routesMap.userDonations)}
             {renderDesktopMenuButton("Donate", handleMenuButtonClick, routesMap.paypal)}            
             {renderLoginMenuButton()}
-            {renderDesktopMenuButton("Contact Us", () => {}, routesMap.register)}
+            {renderDesktopMenuButton("Contact Us", handleMenuButtonClick, routesMap.contactUs)}
           </Box>
         </Toolbar>
       </AppBar>

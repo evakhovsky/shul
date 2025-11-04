@@ -14,7 +14,9 @@ export const routesMap = {
     payPalConfirm: "/payPalConfirm",
     payPalConfirmSubscription: "/payPalConfirmSubscription",
     userDonations: '/userDonations',
-    account: "/account"
+    account: "/account",
+    contactUs: "/contactUs",
+    contactUsSuccess: "/contactUsSuccess"
   };
 
 export class RouteConfig implements IRouteConfig {
