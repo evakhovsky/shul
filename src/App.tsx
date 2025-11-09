@@ -18,6 +18,7 @@ import UserDonations from './components/pages/content/UserDonations';
 import Account from './components/pages/Account';
 import ContactUsComponent from './components/pages/ContactUs'
 import ContactUsSuccess from './components/pages/ContactUsSuccess'
+import UserDonationsNoAuthentication from './components/pages/content/UserDonationsNoAuthentication';
 
 function App() {
   const getPaypClientID = ():string => {
@@ -58,6 +59,7 @@ function App() {
               <Route path={routesMap.account} element={<Account />} />
               <Route path={routesMap.contactUs} element={<ContactUsComponent />} />
               <Route path={routesMap.contactUsSuccess} element={<ContactUsSuccess />} />
+              <Route path={routesMap.userDonationsNoAuthentication} element={<UserDonationsNoAuthentication />} />
             </Routes>
           </Router>
         </AppBarProvider>
