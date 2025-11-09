@@ -1,17 +1,14 @@
 import donationService from '../../shared/services/donationService';
 import { useState } from 'react';
-import DayPickerInput from 'react-day-picker/DayPickerInput'
-import helperUtil from '../../shared/Util'
+//import DayPickerInput from 'react-day-picker/DayPickerInput'
+//import helperUtil from '../../shared/Util'
 import dateFnsFormat from 'date-fns/format';
 import moment from 'moment'
 import Button from 'react-bootstrap/Button';
 import { Text } from 'react-native';
 import {Link } from "react-router-dom";
-import Table from 'react-bootstrap/Table'
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
-import TableCell from '@material-ui/core/TableCell';
+import {Table, TableRow, TableCell, TableBody, TableHead} from '@mui/material';
+import queryString from 'query-string';
 
 function UserDonationsNoAuthentication() {
     const [startDate, setStartDate] = useState(new Date());
@@ -28,7 +25,6 @@ function UserDonationsNoAuthentication() {
     }
 
     const onPageLoad = async () => {
-        const queryString = require('query-string');
         const parsed = queryString.parse(window.location.search);
 
         //http://localhost:3000/userDonationsNoAuthentication?token=55d1d853-a9a7-46b9-97ed-ffe40a973001&shul=KM&firstName=Ezra
@@ -80,7 +76,7 @@ function UserDonationsNoAuthentication() {
         setStartDate(initialDate);
     }
 
-    const renderStartDate = () => {
+    /*const renderStartDate = () => {
         const FORMAT = 'MM/dd/yyyy';
         if(!startDate){
             return;
@@ -125,7 +121,7 @@ function UserDonationsNoAuthentication() {
                     console.log(endDate)
                 }
             } />;    
-    }
+    }*/
 
     const renderStartEndDates = () => {
         return(
@@ -137,11 +133,11 @@ function UserDonationsNoAuthentication() {
                     <thead>
                         <tr>
                             <td style={{ textAlign: 'right', paddingBottom: "10px", paddingRight: '10px',verticalAlign: 'middle' }}>From:</td>
-                            <td style={{ verticalAlign: 'middle' }}>{renderStartDate()}</td>
+                            <td style={{ verticalAlign: 'middle' }}>{/*renderStartDate()*/}</td>
                         </tr>
                         <tr>
                             <td style={{ textAlign: 'right', paddingBottom: "10px", paddingRight: '10px', verticalAlign: 'middle' }}>To:</td>
-                            <td style={{ verticalAlign: 'middle' }}>{renderEndDate()}</td>
+                            <td style={{ verticalAlign: 'middle' }}>{/*renderEndDate()*/}</td>
                         </tr>
                         <tr>
                             <td style={{ textAlign: 'right', paddingBottom: "10px", paddingRight: '10px', verticalAlign: 'middle' }}></td>
