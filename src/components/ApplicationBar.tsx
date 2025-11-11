@@ -17,10 +17,6 @@ import LoginDlg from './authentication/LoginDlg';
 import MenuItem from '@mui/material/MenuItem';
 import { styled, alpha } from '@mui/material/styles';
 import Menu, { MenuProps } from '@mui/material/Menu';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import LoginIcon from '@mui/icons-material/Login';
 import { authenticationService } from '../components/shared/services/Authenticationservice';
 import { useAppBar } from '../components/shared/AppBarContext';
 import { useLocation } from 'react-router-dom';
@@ -109,9 +105,8 @@ export default function ApplicationBar(props: Props) {
     forceUpdate({}); // Update the dummy state to trigger re-render      
   };
 
-  const handleClose = (menuClicked: string) => {
-    setAnchorEl(null);
-    console.log(menuClicked);
+  const handleClose = () => {
+    setAnchorEl(null);    
   };
 
   const handleLogin = () => {
@@ -119,6 +114,10 @@ export default function ApplicationBar(props: Props) {
     setAnchorEl(null);
     setShowLogin(true);
   }
+
+  const handleMenuDropDownClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleMobileMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     console.log('List item clicked:', event.currentTarget.innerText);
@@ -132,10 +131,33 @@ export default function ApplicationBar(props: Props) {
     }
 
     return (<ListItem key={title} disablePadding>
-          <ListItemButton sx={{ textAlign: 'center' }}>
+          <ListItemButton sx={{ textAlign: 'center' }} onClick={handleDrawerToggle} >
             <ListItemText primary={title} onClick={handleMobileMenuClick}/>
           </ListItemButton>
         </ListItem>    
+    );
+  }
+
+  const renderMobileDropDownMenu = () => {
+    return (
+      <div>
+        <Button
+          color="inherit"
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleMenuDropDownClick}
+        >
+          Menu
+        </Button>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}>
+            <MenuItem onClick={handleClose}> ExampleMenuItem </MenuItem> 
+        </Menu>
+      </div>
     );
   }
 
@@ -218,7 +240,7 @@ export default function ApplicationBar(props: Props) {
   }
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+    <Box sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
         MUI
       </Typography>
@@ -230,6 +252,7 @@ export default function ApplicationBar(props: Props) {
           {renderMobileMenuListItem("Donate", routesMap.paypal)}
           {renderMobileLoginMenuListItem()}
           {renderMobileMenuListItem("Contact Us", routesMap.contactUs)}
+          {renderMobileDropDownMenu()}
       </List>
     </Box>
   );
@@ -278,37 +301,24 @@ export default function ApplicationBar(props: Props) {
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
             MUI
-          </Typography>
+          </Typography>          
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <StyledMenu
-              id="demo-customized-menu"
-              slotProps={{
-              list: {
-                'aria-labelledby': 'demo-customized-button',
-              },
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-          <MenuItem onClick={handleLogin} disableRipple>
-            <LoginIcon />
-            Login
-          </MenuItem>
-          <MenuItem onClick={() => handleClose("copy")} disableRipple>
-            <FileCopyIcon />
-            Duplicate
-          </MenuItem>
-          <Divider sx={{ my: 0.5 }} />
-          <MenuItem onClick={() => handleClose("archive")} disableRipple>
-          <ArchiveIcon />
-            Archive
-          </MenuItem>
-          <MenuItem onClick={() => handleClose("horizon")} disableRipple>
-            <MoreHorizIcon />
-            More
-          </MenuItem>
-        </StyledMenu>
+            <Button
+              color="inherit"
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleMenuDropDownClick}
+            >
+              Menu
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}>
+              <MenuItem onClick={handleClose}> ExampleMenuItem </MenuItem> 
+            </Menu>
             {renderDesktopMenuButton("Home", handleMenuButtonClick, routesMap.home)}
             {renderDesktopMenuButton("Profile", handleMenuButtonClick, routesMap.account)}
             {renderDesktopMenuButton("Your Donations", handleMenuButtonClick, routesMap.userDonations)}
