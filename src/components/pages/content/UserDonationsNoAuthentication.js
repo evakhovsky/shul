@@ -3,12 +3,16 @@ import { useState } from 'react';
 //import DayPickerInput from 'react-day-picker/DayPickerInput'
 //import helperUtil from '../../shared/Util'
 import dateFnsFormat from 'date-fns/format';
-import moment from 'moment'
 import Button from 'react-bootstrap/Button';
-import { Text } from 'react-native';
 import {Link } from "react-router-dom";
 import {Table, TableRow, TableCell, TableBody, TableHead} from '@mui/material';
 import queryString from 'query-string';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Text, View } from 'react-native';
+import dayjs from 'dayjs';
 
 function UserDonationsNoAuthentication() {
     const [startDate, setStartDate] = useState(new Date());
@@ -29,6 +33,7 @@ function UserDonationsNoAuthentication() {
 
         //http://localhost:3000/userDonationsNoAuthentication?token=55d1d853-a9a7-46b9-97ed-ffe40a973001&shul=KM&firstName=Ezra
 //{shul: 'KM', token: '12345'}
+//http://localhost:3000/userDonationsNoAuthentication?token=f736473f-ab54-44f1-8192-a99acb3b2c41&shul=OS&firstName=Ezra
 
         if(!parsed || parsed === undefined || parsed === null){
             return;
@@ -74,6 +79,53 @@ function UserDonationsNoAuthentication() {
     const populateInitialDate = () => {
         let initialDate = new Date((new Date()).getFullYear(), 0, 1);
         setStartDate(initialDate);
+    }
+
+    const renderStartDate = () => {
+        if(!startDate){
+            return;
+        }
+
+        return (
+            <View style={{marginRight: '10px', borderWidth: 0, borderColor: 'blue'}}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} >
+                    <DemoContainer components={['DatePicker', 'DatePicker']}>
+                        <DatePicker
+                        label="Start Date"
+                        value={dayjs(startDate)}
+                        onChange={(newValue) => setStartDate(newValue.toDate())}
+                        />
+                    </DemoContainer>
+                </LocalizationProvider>
+            </View>
+        );        
+    }
+
+    const renderDateRange = () => {
+        return(
+            <View style={{flex: 1, flexDirection: 'row', 
+                            justifyContent: "center", 
+                            alignItems: 'center', 
+                            marginTop: '10px', 
+                            marginBottom: '20px'}}>
+                {renderStartDate()}
+                {renderEndtDate()}
+            </View>
+        );
+    }
+
+    const renderEndtDate = () => {
+        return (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker', 'DatePicker']}>
+                    <DatePicker
+                    label="End Date"
+                    value={dayjs(endDate)}
+                    onChange={(newValue) => setEndDate(newValue.toDate())}
+                    />
+                </DemoContainer>
+            </LocalizationProvider>
+        );  
     }
 
     /*const renderStartDate = () => {
@@ -125,28 +177,10 @@ function UserDonationsNoAuthentication() {
 
     const renderStartEndDates = () => {
         return(
-            <div>
-                <table style={{ width: '80%', tableLayout: 'fixed' }}>
-                    <colgroup>
-                        <col style={{ width: `${100 / 2}%` }} />                    
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <td style={{ textAlign: 'right', paddingBottom: "10px", paddingRight: '10px',verticalAlign: 'middle' }}>From:</td>
-                            <td style={{ verticalAlign: 'middle' }}>{/*renderStartDate()*/}</td>
-                        </tr>
-                        <tr>
-                            <td style={{ textAlign: 'right', paddingBottom: "10px", paddingRight: '10px', verticalAlign: 'middle' }}>To:</td>
-                            <td style={{ verticalAlign: 'middle' }}>{/*renderEndDate()*/}</td>
-                        </tr>
-                        <tr>
-                            <td style={{ textAlign: 'right', paddingBottom: "10px", paddingRight: '10px', verticalAlign: 'middle' }}></td>
-                            <td style={{ verticalAlign: 'middle' }}>{renderFilterButton()}</td>
-                        </tr>
-                    </thead>
-  
-                </table>
-            </div>
+            <View style={{flex: 1, justifyContent: "center", alignItems: 'center'}}>                
+                {renderDateRange()}                
+                {renderFilterButton()}                                            
+            </View>
         );
     }
 
