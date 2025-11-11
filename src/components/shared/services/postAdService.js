@@ -1,6 +1,6 @@
 import dateFnsFormat from 'date-fns/format';
 import helperUtil from 'util'
-import uuid from 'react-native-uuid';
+import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -314,9 +314,9 @@ const getPostAdObject = (usertID, duration, startDate, description, isHTML, emai
     const dateRange = getStartEndDates(startDate, duration);
     const contactId = !usertID || usertID === null || usertID === undefined ? '' : usertID;
 
-    var id = isAuthenticated ? uuid.v1() : token;
+    var id = isAuthenticated ? uuidv4.v1() : token;
     if(id === undefined || id === null || id.length < 1){
-        id = uuid.v1();
+        id = uuidv4.v1();
     }
 
     const data = JSON.stringify({
@@ -345,7 +345,7 @@ async function addImageAuthenticated(usertID, email, file) {
     formData.append("email", email);
     formData.append("usertID", usertID);
     formData.append("entity", SHUL);
-    formData.append("id", uuid.v1());    
+    formData.append("id", uuidv4.v1());    
 
     try {
         const res = await axios.post(SERVER_URL + 'api/PostPageAd/AddImageAuthenticated', formData);

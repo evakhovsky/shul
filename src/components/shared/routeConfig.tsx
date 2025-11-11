@@ -17,7 +17,8 @@ export const routesMap = {
     account: "/account",
     contactUs: "/contactUs",
     contactUsSuccess: "/contactUsSuccess",
-    userDonationsNoAuthentication: "/userDonationsNoAuthentication"
+    userDonationsNoAuthentication: "/userDonationsNoAuthentication",
+    homePagePost: "/homePagePost"
   };
 
 export class RouteConfig implements IRouteConfig {

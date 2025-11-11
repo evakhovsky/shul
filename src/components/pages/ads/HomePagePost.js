@@ -1,23 +1,24 @@
+//HomePagePost.tsx
 import WelcomePost from './WelcomePost'
 import React, { useState, useRef } from 'react';
 import { Text, View, SafeAreaView, TextInput, StyleSheet } from 'react-native';
-import DatePicker from '@material-ui/lab/DatePicker';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
-import TextField from "@material-ui/core/TextField";
+//import DatePicker from '@mui/material/lab/DatePicker';
+//import AdapterDateFns from '@mui/material/lab/AdapterDateFns';
+//import LocalizationProvider from '@mui/material/lab/LocalizationProvider';
+//import TextField from "@mui/material/core/TextField";
 import Button from 'react-bootstrap/Button';
-import UpdateSharp from '@material-ui/icons/UpdateOutlined';
-import IncrementDecrementCounter from '../../shared/Controls/IncrementDecrementCounter'
+import UpdateSharp from '@mui/icons-material/UpdateOutlined';
+import IncrementDecrementCounter from '../../shared/controls/IncrementDecrementCounter'
 import postAdService from '../../shared/services/postAdService'
-import PostAdEditor from '../../shared/Controls/PostAdEditor'
+import PostAdEditor from '../../shared/controls/PostAdEditor'
 import { EditorState, ContentState } from 'draft-js';
 import { convertToRaw, convertFromRaw } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import utilservice from '../../shared/services/utilservice'
 import authenticationService from '../../shared/services/authentication.service'
 import { Navigate } from "react-router-dom";
-import AttachFile from '@material-ui/icons/AttachFile';
-import Cancel from '@material-ui/icons/Cancel';
+import AttachFile from '@mui/icons-material/AttachFile';
+import Cancel from '@mui/icons-material/Cancel';
 
 function HomePagePost() {
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
@@ -269,7 +270,7 @@ function HomePagePost() {
         setHTMLPreviewString(html);
     }
 
-    const renderGregorianDate = () => {
+    /*const renderGregorianDate = () => {
         return (
             <View style={{flex: 1, flexDirection: 'row', justifyContent: "center", alignItems: 'center', marginTop: 10}}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -282,7 +283,7 @@ function HomePagePost() {
                 </LocalizationProvider>
             </View>
         );
-    }
+    }*/
 
     const renderPostAdEditor = () => {
         if(isMobile || isHTML){
@@ -1011,7 +1012,7 @@ function HomePagePost() {
         <div>
             <WelcomePost onAuthenticated={onAuthenticated}/>
             {renderHeaderText()}
-            {renderGregorianDate()}
+            {/*renderGregorianDate()*/}
             {renderAuthenticationValidation()}
             {renderApiValidation()}
             {renderButtons()}
