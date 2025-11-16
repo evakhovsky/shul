@@ -303,21 +303,6 @@ function HomePagePost() {
                 );        
     }
 
-    /*const renderGregorianDate = () => {
-        return (
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: "center", alignItems: 'center', marginTop: 10}}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                    value={gregorianDate}
-                    format="MM/dd/yyyy EEEE"
-                    onChange={handleDateChange}
-                    renderInput={(props) => <TextField {...props} />}
-                    />                
-                </LocalizationProvider>
-            </View>
-        );
-    }*/
-
     const renderPostAdEditor = () => {
         if(isMobile || isHTML){
             return;
