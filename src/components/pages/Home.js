@@ -8,6 +8,7 @@ import './Home.css';
 import { Link } from "react-router-dom";
 import hebrewDayInfo from '../shared/homeComponents/HebrewDateInfo'
 import { authenticationService } from '../shared/services/Authenticationservice';
+import MainPageAdsDisplay from '../pages/ads/MainPageAdsDisplay'
 
 const SHUL = process.env.REACT_APP_SHUL;
 
@@ -79,7 +80,13 @@ const renderMemo = () => {
     );
 }
 
-function MobileHome(props) {    
+function MobileHome(props) {
+    const [showLogoPicture, setShowLogoPicture] = useState(false);
+
+    const onFetchedPosts = async (areThereValidPosts) => {
+        setShowLogoPicture(!areThereValidPosts);
+    }
+
     return (<div className='home'>
                 <View style={{ justifyContent: "center" }}>
                     {renderHebrewDay()}
@@ -93,8 +100,9 @@ function MobileHome(props) {
                 <HousePic showLogoPicture={true} />
                     {renderMemo()}
                 <div className="centerText">
-                        <Link to="/paypal">Donate</Link>
+                    <Link to="/paypal">Donate</Link>
                 </div>
+                <MainPageAdsDisplay onFetchedPosts={onFetchedPosts} />
                 <br></br>
             </div>
     )
@@ -123,6 +131,7 @@ function DesktopHome(props) {
             <div className="centerText">
                     <Link to="/paypal">Donate</Link>
             </div>
+            <MainPageAdsDisplay onFetchedPosts={onFetchedPosts} />
             <br></br>
         </div>
     )

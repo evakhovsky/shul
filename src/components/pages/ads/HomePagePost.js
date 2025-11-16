@@ -64,7 +64,7 @@ function HomePagePost() {
     const [listInputPics, setListInputPics] = React.useState([]);
     const [isDeletingImage, setIsDeletingImageageIdToShow] = useState(false);
     const [isInitialRender, setIsInitialRender] = useState(true);
-
+    
     React.useEffect(() => {        
         return () => clearTimeout(timerRef.current);
     }, []);
