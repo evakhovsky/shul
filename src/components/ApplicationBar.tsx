@@ -138,6 +138,16 @@ export default function ApplicationBar(props: Props) {
     );
   }
 
+  const renderPostOnMainPageMenu = () => {
+    return (<Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}>
+              <MenuItem onClick={() => {handleClose(); navigate(routesMap.homePagePost);}}> Post on main page </MenuItem> 
+            </Menu>
+    );
+  }
+
   const renderMobileDropDownMenu = () => {
     return (
       <div>
@@ -151,12 +161,7 @@ export default function ApplicationBar(props: Props) {
         >
           Menu
         </Button>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}>
-            <MenuItem onClick={handleClose}> ExampleMenuItem </MenuItem> 
-        </Menu>
+        {renderPostOnMainPageMenu()}
       </div>
     );
   }
@@ -280,6 +285,28 @@ export default function ApplicationBar(props: Props) {
     return(<div></div>);
   };
 
+  const renderDesktopPostAdButton = () => {
+    renderPostOnMainPageMenu();
+    return(
+      <Button color="inherit"
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleMenuDropDownClick}>
+        Post
+      </Button>
+    );
+  }
+
+  const renderDesktopPostAdMenu = () => {
+    if(!authenticationService.isAdministrator()){
+      return;
+    }
+
+    return renderDesktopPostAdButton();
+  }
+
   return (
     <div>
     <Box sx={{ display: 'flex' }}>
@@ -303,26 +330,11 @@ export default function ApplicationBar(props: Props) {
             MUI
           </Typography>          
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <Button
-              color="inherit"
-              id="basic-button"
-              aria-controls={open ? 'basic-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleMenuDropDownClick}
-            >
-              Menu
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}>
-              <MenuItem onClick={handleClose}> ExampleMenuItem </MenuItem> 
-            </Menu>
             {renderDesktopMenuButton("Home", handleMenuButtonClick, routesMap.home)}
             {renderDesktopMenuButton("Profile", handleMenuButtonClick, routesMap.account)}
             {renderDesktopMenuButton("Your Donations", handleMenuButtonClick, routesMap.userDonations)}
-            {renderDesktopMenuButton("Donate", handleMenuButtonClick, routesMap.paypal)}            
+            {renderDesktopMenuButton("Donate", handleMenuButtonClick, routesMap.paypal)}
+            {renderDesktopPostAdMenu()}
             {renderLoginMenuButton()}
             {renderDesktopMenuButton("Contact Us", handleMenuButtonClick, routesMap.contactUs)}
           </Box>

@@ -28,5 +28,6 @@ export interface IAuthenticationService {
     logout() : void;
     resetPassword(email: string) : Promise<string>;
     resetCredentials(email: string, token: string, password: string) : Promise<string>;
+    isAdministrator() : boolean;
 }
 

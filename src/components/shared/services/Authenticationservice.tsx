@@ -36,6 +36,22 @@ class AuthenticationService implements IAuthenticationService {
           this.sendRefreshEvent();
           return response;
   }
+  
+  public isAdministrator = () : boolean  => {
+    var token = localStorage.getItem('token');
+    
+    if (!token) {        
+      return false;
+    }
+
+    let resultToken : IToken = jwtDecode<IToken>(token);
+    if(!resultToken.Roles)
+    {
+        return false;
+    }
+
+    return resultToken.Roles.includes('Administrator');
+  }
 
     public isUserLoggedIn = () : boolean  => {
         var token = localStorage.getItem('token');
