@@ -9,6 +9,7 @@ import Select from 'react-select'
 function PostAdEditor({onRichTextEditorStateChanged, initialEditorState, isReadOnly}) {
     const [showColorPickerDlg, setShowColorPickerDlg] = useState(false);    
     const [editorState, setEditorState] = React.useState(EditorState.createEmpty());
+    const [isInitialState, setIsInitialState] = useState(true);
 
     const editor = React.useRef(null);
     
@@ -21,6 +22,12 @@ function PostAdEditor({onRichTextEditorStateChanged, initialEditorState, isReadO
         
         if(initialEditorState !== null && initialEditorState !== undefined && initialEditorState){
             setEditorState(initialEditorState)
+            if(isInitialState){
+                if(onRichTextEditorStateChanged != null){
+                    onRichTextEditorStateChanged(initialEditorState);
+                }
+                setIsInitialState(false);
+            }
         }
         
     }, [initialEditorState]);

@@ -63,6 +63,7 @@ function HomePagePost() {
     const timerImageUploadErrorRef = useRef(null);
     const [listInputPics, setListInputPics] = React.useState([]);
     const [isDeletingImage, setIsDeletingImageageIdToShow] = useState(false);
+    const [isInitialRender, setIsInitialRender] = useState(true);
 
     React.useEffect(() => {        
         return () => clearTimeout(timerRef.current);
@@ -105,10 +106,11 @@ function HomePagePost() {
         isDateValid(new Date(postAd.startDate));
         setRangeDates([postAd.startDate, postAd.endDate]);
         setInitialDurationDays(postAd.durationDays)
+        setDuration(postAd.durationDays);
         setListInputPics(postAd.images);
         setIsAdminPost(postAd.isAdminPost);
         console.log(postAd.description);
-
+        
         if(!postAd.isHTML && !postAd.isEditor){
             let contentState;
             contentState = {
@@ -230,7 +232,6 @@ function HomePagePost() {
             }
             console.log(initialState)
             setInitialEditorState(initialState)
-            setInitialEditorState(null)
         }
         catch(e) {
             
@@ -260,10 +261,14 @@ function HomePagePost() {
         if(textValid){
             setErrorText(null);
         }
-        else{
-            setErrorText('Exceeded number of words');
+        else if(!isInitialRender){
+                setErrorText('Exceeded number of words');
+                console.log('isInitialRender');
+                setIsInitialRender(false);
+                return;
         }
-
+        
+        setErrorText(null);
         setDateValid(true);
         return true;
     }
@@ -271,7 +276,6 @@ function HomePagePost() {
     const onRichTextEditorStateChanged = (state) => {
         setEditorState(state);
         const editorText = state.getCurrentContent().getPlainText('\u0001');
-        console.log(editorText)
         isTextValid(editorText)
         const html = getHTMLFromEditor();
         setHTMLPreviewString(html);
@@ -1021,8 +1025,7 @@ function HomePagePost() {
 
     const onPageLoad = async () => {
         const parsed = queryString.parse(window.location.search);
-        console.log(parsed);
-
+        
         if(!parsed || !parsed.token || !parsed.edit) {
             return;
         }
