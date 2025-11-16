@@ -314,9 +314,9 @@ const getPostAdObject = (usertID, duration, startDate, description, isHTML, emai
     const dateRange = getStartEndDates(startDate, duration);
     const contactId = !usertID || usertID === null || usertID === undefined ? '' : usertID;
 
-    var id = isAuthenticated ? uuidv4.v1() : token;
+    var id = isAuthenticated ? uuidv4() : token;
     if(id === undefined || id === null || id.length < 1){
-        id = uuidv4.v1();
+        id = uuidv4();
     }
 
     const data = JSON.stringify({
@@ -345,7 +345,7 @@ async function addImageAuthenticated(usertID, email, file) {
     formData.append("email", email);
     formData.append("usertID", usertID);
     formData.append("entity", SHUL);
-    formData.append("id", uuidv4.v1());    
+    formData.append("id", uuidv4());    
 
     try {
         const res = await axios.post(SERVER_URL + 'api/PostPageAd/AddImageAuthenticated', formData);

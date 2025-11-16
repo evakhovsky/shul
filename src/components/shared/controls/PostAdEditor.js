@@ -3,7 +3,7 @@ import { Editor, EditorState, RichUtils } from 'draft-js';
 import { View } from 'react-native';
 import './PostAdEditor.css';
 import 'draft-js/dist/Draft.css';
-import ColorPickerDlg from './ColorPickerDlg'
+import ColorPickerDlg from '../controls/ColorPickerDlg'
 import Select from 'react-select'
 
 function PostAdEditor({onRichTextEditorStateChanged, initialEditorState, isReadOnly}) {

@@ -1,4 +1,3 @@
-//HomePagePost.tsx
 import WelcomePost from './WelcomePost'
 import React, { useState, useRef } from 'react';
 import { Text, View, SafeAreaView, TextInput, StyleSheet } from 'react-native';
@@ -6,6 +5,12 @@ import { Text, View, SafeAreaView, TextInput, StyleSheet } from 'react-native';
 //import AdapterDateFns from '@mui/material/lab/AdapterDateFns';
 //import LocalizationProvider from '@mui/material/lab/LocalizationProvider';
 //import TextField from "@mui/material/core/TextField";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { Box } from '@mui/material';
+import dayjs from 'dayjs';
 import Button from 'react-bootstrap/Button';
 import UpdateSharp from '@mui/icons-material/UpdateOutlined';
 import IncrementDecrementCounter from '../../shared/controls/IncrementDecrementCounter'
@@ -19,6 +24,7 @@ import authenticationService from '../../shared/services/authentication.service'
 import { Navigate } from "react-router-dom";
 import AttachFile from '@mui/icons-material/AttachFile';
 import Cancel from '@mui/icons-material/Cancel';
+import queryString from 'query-string';
 
 function HomePagePost() {
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
@@ -101,6 +107,7 @@ function HomePagePost() {
         setInitialDurationDays(postAd.durationDays)
         setListInputPics(postAd.images);
         setIsAdminPost(postAd.isAdminPost);
+        console.log(postAd.description);
 
         if(!postAd.isHTML && !postAd.isEditor){
             let contentState;
@@ -268,6 +275,28 @@ function HomePagePost() {
         isTextValid(editorText)
         const html = getHTMLFromEditor();
         setHTMLPreviewString(html);
+    }
+
+    const renderGregorianDate = () => {
+        return (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center', // Centers horizontally
+                        alignItems: 'center', // Centers vertically                        
+                    }}
+                    >
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DemoContainer components={['DatePicker', 'DatePicker']}>
+                            <DatePicker
+                            label="Start Date"
+                            value={dayjs(gregorianDate)}
+                            onChange={(newValue) => handleDateChange(newValue.toDate())}
+                            />
+                        </DemoContainer>
+                    </LocalizationProvider>
+                </Box>            
+                );        
     }
 
     /*const renderGregorianDate = () => {
@@ -991,7 +1020,6 @@ function HomePagePost() {
     }
 
     const onPageLoad = async () => {
-        const queryString = require('query-string');
         const parsed = queryString.parse(window.location.search);
         console.log(parsed);
 
@@ -1012,7 +1040,7 @@ function HomePagePost() {
         <div>
             <WelcomePost onAuthenticated={onAuthenticated}/>
             {renderHeaderText()}
-            {/*renderGregorianDate()*/}
+            {renderGregorianDate()}
             {renderAuthenticationValidation()}
             {renderApiValidation()}
             {renderButtons()}
