@@ -151,6 +151,19 @@ class AuthenticationService implements IAuthenticationService {
         window.dispatchEvent(customEvent);
         
     }
+
+    public getEntityAbbreviation = () : string => {
+      switch(SHUL){
+        case 'OS':
+          return 'נ"י';
+        case 'MD':
+          return 'מ"ש';
+        case 'KY':
+          return 'קמ"י';
+        default:
+          return '';
+      }
+    }
 }
 
 export const authenticationService = new AuthenticationService();
