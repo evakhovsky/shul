@@ -5,14 +5,26 @@ import '../../pages/Home.css';
 import React, { useState, useRef, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 
+const styles = StyleSheet.create({        
+    text: {
+        fontSize: 14,
+        lineHeight: 16,
+        fontWeight: 'bold',
+        letterSpacing: 0.2,
+        color: 'white',
+      },
+});
+
 export function ColorPickerDlg({onClose, showModal, onColorPicked, onDefaultColorPicked}) {
     const [color, setColor] = useState('#fff');
     const ref = useRef(null);
     const [modalWidth, setModalWidth] = useState(0);
 
     useEffect(() => {
-        setModalWidth(ref.current.offsetWidth);
-    }, []);
+        if (ref.current) {
+            setModalWidth(ref.current.offsetWidth);
+        }
+    }, [showModal]);
 
     const closeModal = () => {
         onClose();
@@ -22,16 +34,6 @@ export function ColorPickerDlg({onClose, showModal, onColorPicked, onDefaultColo
         //console.log(pickedColor)
         setColor(pickedColor);
     };
-
-    const styles = StyleSheet.create({        
-        text: {
-            fontSize: 14,
-            lineHeight: 16,
-            fontWeight: 'bold',
-            letterSpacing: 0.2,
-            color: 'white',
-          },
-    });
 
     const renderPickBtn = () => {
         return (
@@ -49,11 +51,11 @@ export function ColorPickerDlg({onClose, showModal, onColorPicked, onDefaultColo
         );
     }
 
-    const onDefault = async () => {
+    const onDefault = () => {
         onDefaultColorPicked();
     }
 
-    const onSubmit = async () => {
+    const onSubmit = () => {
         onColorPicked(color);
     }
 

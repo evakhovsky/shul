@@ -11,8 +11,7 @@ import UpdateSharp from '@mui/icons-material/UpdateOutlined';
 import IncrementDecrementCounter from '../../shared/controls/IncrementDecrementCounter'
 import postAdService from '../../shared/services/postAdService'
 import PostAdEditor from '../../shared/controls/PostAdEditor'
-import { EditorState, ContentState } from 'draft-js';
-import { convertToRaw, convertFromRaw } from 'draft-js';
+import { EditorState, ContentState, convertToRaw, convertFromRaw } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 import utilservice from '../../shared/services/utilservice'
 import authenticationService from '../../shared/services/authentication.service'
@@ -22,7 +21,7 @@ import Cancel from '@mui/icons-material/Cancel';
 
 function HomePagePost() {
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
-    const [userId, setUserId] = useState(false);
+    const [userId, setUserId] = useState(null);
     const [gregorianDate, setGregorianDate] = useState(new Date());
     const [errorText, setErrorText] = useState('');
     const [text, onChangeText] = React.useState("");
@@ -34,7 +33,7 @@ function HomePagePost() {
     const [email, setEmail] = useState('');
     const [apiResponse, setApiResponse] = useState({status: false, error: null});
     const [editorState, setEditorState] = React.useState(EditorState.createEmpty());
-    const [initialEditorState, setInitialEditorState] = useState(false);
+    const [initialEditorState, setInitialEditorState] = useState(null);
     const [rangeDates, setRangeDates] = useState([]);
     const [initialDurationDays, setInitialDurationDays] = useState(1);
     const [htmlPreviewString, setHTMLPreviewString] = React.useState('');
@@ -56,11 +55,16 @@ function HomePagePost() {
     const timerFileExtensionRef = useRef(null);
     const timerImageUploadErrorRef = useRef(null);
     const [listInputPics, setListInputPics] = React.useState([]);
-    const [isDeletingImage, setIsDeletingImageageIdToShow] = useState(false);
+    const [isDeletingImage, setIsDeletingImage] = useState(false);
 
-    React.useEffect(() => {        
-        return () => clearTimeout(timerRef.current);
-    }, []);
+    React.useEffect(() => {
+        onPageLoad();
+        return () => {
+            clearTimeout(timerRef.current);
+            clearTimeout(timerFileExtensionRef.current);
+            clearTimeout(timerImageUploadErrorRef.current);
+        };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const styles = StyleSheet.create({
         input: {
@@ -766,14 +770,14 @@ function HomePagePost() {
     }
 
     const onCancelPicture = async (imageId) => {
-        setIsDeletingImageageIdToShow(true);
+        setIsDeletingImage(true);
         console.log(imageId);
         var result = await postAdService.deleteImage(imageId);
         if(result){
             var picRemoved = listInputPics.filter((element) => { return element.id !== imageId; })
             setListInputPics(picRemoved);
         }
-        setIsDeletingImageageIdToShow(false);
+        setIsDeletingImage(false);
     };
 
     const renderDeletingImage = () => {
@@ -984,10 +988,6 @@ function HomePagePost() {
             await fetchPostPage(userId);
             return;
         }                
-    }
-
-    window.onload = function (){
-        onPageLoad();      
     }
 
     const onPageLoad = async () => {
