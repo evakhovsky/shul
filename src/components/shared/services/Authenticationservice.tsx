@@ -155,10 +155,10 @@ class AuthenticationService implements IAuthenticationService {
     public getEntityAbbreviation = () : string => {
       switch(SHUL){
         case 'OS':
-          return 'נ"י';
+          return 'נצח ישראל';
         case 'MD':
           return 'מ"ש';
-        case 'KY':
+        case 'KY': 
           return 'קמ"י';
         default:
           return '';
