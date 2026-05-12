@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useViewport from '../shared/ViewportProvider'
 import { Text, StyleSheet, View } from 'react-native';
 import logo from './images/mdShulInside.jpg';
@@ -8,25 +8,31 @@ import './Home.css';
 import { Link } from "react-router-dom";
 import hebrewDayInfo from '../shared/homeComponents/HebrewDateInfo'
 import { authenticationService } from '../shared/services/Authenticationservice';
+import { utilityService } from '../shared/services/Utilityservice';
 
 const SHUL = process.env.REACT_APP_SHUL;
 
 function Home() {
     const [key, setKey] = useState(0); // Initial key for rerender
+    const hasMarkedPage = useRef(false);
 
     useEffect(() => {
-        const handleCustomEvent = (event) => {
+        const handleCustomEvent = (event) => {           
             console.log('on custom event');
             console.log('Custom event received in JavaScript component:', event.detail.message);            
             forceDatePickerRerender();
         };
 
-        console.log('registering custom event handler');
+        if (!hasMarkedPage.current) {
+            console.log('registering custom event handler');
+            utilityService.markPage();
+            hasMarkedPage.current = true;
+        }
 
         window.addEventListener('refreshEvent', handleCustomEvent);
 
         return () => {
-            window.removeEventListener('loginEvent', handleCustomEvent);
+            window.removeEventListener('refreshEvent', handleCustomEvent);
         };
     }, []);
 
