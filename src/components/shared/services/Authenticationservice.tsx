@@ -47,6 +47,29 @@ class AuthenticationService implements IAuthenticationService {
         return !this.isExpired();
     }
 
+    public isAdministrator = () : boolean  => {
+      try {
+        var token = localStorage.getItem('token');
+        if (!token) {
+            return false;
+        }
+
+        console.log('checking if user is admin');
+        console.log(token);
+
+        let resultToken : IToken = jwtDecode<IToken>(token);
+
+        console.log('decoded token');
+        console.log(resultToken.Roles);
+
+        return resultToken.Roles.includes('Administrator');
+      } catch (error) {
+        console.log('error checking if user is admin');
+        console.log(error);
+        return false;
+      }
+    }
+
     private isExpired = () : boolean  => {
         var token = localStorage.getItem('token');
         if (!token) {

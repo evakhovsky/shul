@@ -5,24 +5,22 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import { List, ListItem, ListItemButton, ListItemText, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginDlg from './authentication/LoginDlg';
-import MenuItem from '@mui/material/MenuItem';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { styled, alpha } from '@mui/material/styles';
-import Menu, { MenuProps } from '@mui/material/Menu';
+import { MenuProps } from '@mui/material/Menu';
 import { authenticationService } from '../components/shared/services/Authenticationservice';
 import { useAppBar } from '../components/shared/AppBarContext';
 import { useLocation } from 'react-router-dom';
 import { routeConfig } from './shared/routeConfig';
 import { routesMap } from './shared/routeConfig';
 import { useNavigate } from 'react-router-dom';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface Props {
   /**
@@ -40,6 +38,8 @@ export default function ApplicationBar(props: Props) {
   const [showLogin, setShowLogin] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [anchorElMobile, setAnchorElMobile] = React.useState<null | HTMLElement>(null);
+  const openMobile = Boolean(anchorElMobile);
   const [, forceUpdate] = React.useState({}); // Dummy state variable
   const { title } = useAppBar();
   const location = useLocation();
@@ -115,15 +115,24 @@ export default function ApplicationBar(props: Props) {
     setShowLogin(true);
   }
 
-  const handleMenuDropDownClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+   const handleMobileMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     console.log('List item clicked:', event.currentTarget.innerText);
 
     menuNavigate(event.currentTarget.innerText);
   }
+
+const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleItemClick = (value: string) => {
+    console.log(`Selected action: ${value}`);
+    handleClose();
+  };
 
   const renderMobileMenuListItem = (title: string, path: string) => {
     if(!routeConfig.isPublicRouter(path) && !authenticationService.isUserLoggedIn()){
@@ -208,6 +217,124 @@ export default function ApplicationBar(props: Props) {
     );
   }
 
+  interface DropdownOption {
+    value: string;
+    label: string;
+  }
+
+  const options: DropdownOption[] = [
+    { value: 'profile', label: 'My Profile' },
+    { value: 'settings', label: 'Account Settings' },
+    { value: 'logout', label: 'Logout' },
+  ];
+
+  const renderAdmindropdown = () => {
+    if(!authenticationService.isAdministrator()){
+      return;
+    }
+
+    return (
+    <>
+      <Button
+        id="dropdown-button"
+        aria-controls={open ? 'dropdown-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        variant="contained"
+        disableElevation
+        onClick={handleMenuClick}
+        endIcon={<KeyboardArrowDownIcon />}
+      >
+        Admin
+      </Button>
+      <Menu
+        id="dropdown-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'dropdown-button',
+        }}
+        // Aligns the menu cleanly below the button
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem 
+            key={option.value} 
+            onClick={() => handleItemClick(option.value)}
+          >
+            {option.label}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
+  );
+  }
+
+  const renderAdmindropdownMobile = () => {
+    if(!authenticationService.isAdministrator()){
+      return;
+    }
+    
+    return (
+    <List sx={{ width: 250, bgcolor: 'background.paper' }}>
+      {/* Container List Item */}
+      <ListItem disablePadding>
+        <ListItemButton
+          id="list-dropdown-button"
+          aria-controls={openMobile ? 'list-dropdown-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={openMobile ? 'true' : undefined}
+          onClick={handleMenuClick}
+        >
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Admin" />
+          <KeyboardArrowDownIcon />
+        </ListItemButton>
+      </ListItem>
+
+      {/* The Menu remains completely detached from the visual layout flow */}
+      <Menu
+        id="list-dropdown-menu"
+        anchorEl={anchorElMobile}
+        open={openMobile}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'list-dropdown-button',
+        }}
+        // Positions the dropdown cleanly underneath the list item row
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem 
+            key={option.value} 
+            onClick={() => handleItemClick(option.value)}
+          >
+            {option.label}
+          </MenuItem>
+        ))}
+      </Menu>
+    </List>
+  );
+  }
+
+
   const isUserLoggedIn = (): boolean => {
     return authenticationService.isUserLoggedIn();
   }
@@ -229,6 +356,7 @@ export default function ApplicationBar(props: Props) {
           {renderMobileMenuListItem("Donate", routesMap.paypal)}
           {renderMobileLoginMenuListItem()}
           {renderMobileMenuListItem("Contact Us", routesMap.contactUs)}
+          {renderAdmindropdownMobile()}
       </List>
     </Box>
   );
@@ -285,8 +413,9 @@ export default function ApplicationBar(props: Props) {
             {renderDesktopMenuButton("Donate", handleMenuButtonClick, routesMap.paypal)}            
             {renderLoginMenuButton()}
             {renderDesktopMenuButton("Contact Us", handleMenuButtonClick, routesMap.contactUs)}
-          </Box>
-        </Toolbar>
+            {renderAdmindropdown()}
+          </Box>         
+       </Toolbar>
       </AppBar>
       <nav>
         <Drawer

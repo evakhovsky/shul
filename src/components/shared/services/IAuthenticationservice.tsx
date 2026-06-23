@@ -29,5 +29,6 @@ export interface IAuthenticationService {
     resetPassword(email: string) : Promise<string>;
     resetCredentials(email: string, token: string, password: string) : Promise<string>;
     getEntityAbbreviation() : string;
+    isAdministrator() : boolean;
 }
 
