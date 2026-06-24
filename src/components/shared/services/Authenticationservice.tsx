@@ -54,13 +54,7 @@ class AuthenticationService implements IAuthenticationService {
             return false;
         }
 
-        console.log('checking if user is admin');
-        console.log(token);
-
         let resultToken : IToken = jwtDecode<IToken>(token);
-
-        console.log('decoded token');
-        console.log(resultToken.Roles);
 
         return resultToken.Roles.includes('Administrator');
       } catch (error) {

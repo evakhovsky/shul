@@ -106,7 +106,8 @@ export default function ApplicationBar(props: Props) {
   };
 
   const handleClose = () => {
-    setAnchorEl(null);    
+    setAnchorEl(null);  
+    setAnchorElMobile(null);  
   };
 
   const handleLogin = () => {
@@ -125,12 +126,9 @@ const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleItemClick = (value: string) => {
+  const handleMenuItemClick = (value: string) => {
     console.log(`Selected action: ${value}`);
+    menuNavigate(value);
     handleClose();
   };
 
@@ -203,6 +201,12 @@ const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
       case "Contact Us":
         navigate(routesMap.contactUs);
         break;
+        case "postOnMainPage":
+        navigate(routesMap.postOnMainPage);
+        break; 
+      default:
+        console.log(`No navigation action defined for title: ${title}`);
+        break;
     }
   }
 
@@ -223,9 +227,7 @@ const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
   }
 
   const options: DropdownOption[] = [
-    { value: 'profile', label: 'My Profile' },
-    { value: 'settings', label: 'Account Settings' },
-    { value: 'logout', label: 'Logout' },
+    { value: 'postOnMainPage', label: 'Post on main page' }
   ];
 
   const renderAdmindropdown = () => {
@@ -268,7 +270,7 @@ const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
         {options.map((option) => (
           <MenuItem 
             key={option.value} 
-            onClick={() => handleItemClick(option.value)}
+            onClick={() => handleMenuItemClick(option.value)}
           >
             {option.label}
           </MenuItem>
@@ -282,7 +284,7 @@ const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
     if(!authenticationService.isAdministrator()){
       return;
     }
-    
+
     return (
     <List sx={{ width: 250, bgcolor: 'background.paper' }}>
       {/* Container List Item */}
@@ -324,7 +326,7 @@ const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
         {options.map((option) => (
           <MenuItem 
             key={option.value} 
-            onClick={() => handleItemClick(option.value)}
+            onClick={() => handleMenuItemClick(option.value)}
           >
             {option.label}
           </MenuItem>

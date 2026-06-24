@@ -19,6 +19,7 @@ import ContactUsComponent from './components/pages/ContactUs'
 import ContactUsSuccess from './components/pages/ContactUsSuccess'
 import UserDonationsNoAuthentication from './components/pages/content/UserDonationsNoAuthentication';
 import HomePagePost from './components/pages/ads/HomePagePost'
+import PostMainPage from './components/pages/admin/PostMainPage'
 
 function App() {
   const getPaypClientID = ():string => {
@@ -60,7 +61,8 @@ function App() {
               <Route path={routesMap.contactUs} element={<ContactUsComponent />} />
               <Route path={routesMap.contactUsSuccess} element={<ContactUsSuccess />} />
               <Route path={routesMap.userDonationsNoAuthentication} element={<UserDonationsNoAuthentication />} />
-              <Route path={routesMap.homePagePost} element={<HomePagePost />} />              
+              <Route path={routesMap.homePagePost} element={<HomePagePost />} />
+              <Route path={routesMap.postOnMainPage} element={<PostMainPage />} />           
             </Routes>
           </Router>
         </AppBarProvider>
