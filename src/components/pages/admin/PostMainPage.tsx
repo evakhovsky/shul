@@ -359,10 +359,15 @@ export default function ReusableEditor({ initialData, onChange }: EditorProps) {
         },
 
         onChange: async () => {
+          const savedData = await editor.save();
+
           if (onChange) {
-            const savedData = await editor.save();
             onChange(savedData);
           }
+
+          // Optional: use this value later for your API call
+          // console.log("Editor content:", JSON.stringify(savedData));
+          // await fetch('/api/posts', { method: 'POST', body: JSON.stringify(savedData) });
         },
       });
 
