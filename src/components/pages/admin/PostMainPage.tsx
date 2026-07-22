@@ -1,17 +1,19 @@
-import { useState } from 'react';
+import { useRef  } from 'react';
 import ReusableEditor from './TextEditor'
 import { View } from 'react-native';
 import Button from '@mui/material/Button';
+import { postMainPageAdmin } from '../../shared/services/PostMainPageAdmin';
 
 export default function PostMainPage(){
-  const [editorData, setEditorData] = useState<any>(null);
+  const editorData = useRef<string>("");
 
   const handleEditorChange = (data: any) => {
-    setEditorData(data);
+    editorData.current = JSON.stringify(JSON.stringify(data));
   };
 
   const handleSave = () => {
-    console.log('Saving editor content:', editorData);
+    console.log('Saving editor content:', editorData.current);
+    postMainPageAdmin.saveEditorData(editorData.current);
   };
 
   const renderSaveButton = () => {
