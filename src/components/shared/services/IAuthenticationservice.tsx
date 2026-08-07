@@ -30,5 +30,6 @@ export interface IAuthenticationService {
     resetCredentials(email: string, token: string, password: string) : Promise<string>;
     getEntityAbbreviation() : string;
     isAdministrator() : boolean;
+    getEmail() : string;
 }
 

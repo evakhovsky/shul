@@ -1,20 +1,31 @@
-import { IPagePostAd, IPostMainPageAdmin } from "./IPostMainPageAdmin";
+import { Dayjs } from "dayjs";
+import { IPagePostAd, IPostMainPageAdminService } from "./IPostMainPageAdminService";
+import { authenticationService } from './Authenticationservice';
 
 const SHUL = process.env.REACT_APP_SHUL;
 const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
-class PostMainPageAdmin implements IPostMainPageAdmin {
-    public async saveEditorData(editorData: string) : Promise<boolean>{
+class PostMainPageAdmin implements IPostMainPageAdminService {
+    public async saveEditorData(editorData: string, 
+                                startDate: Dayjs | null,
+                                endDate: Dayjs | null) : Promise<boolean>{
         const uniqueId: string = crypto.randomUUID();
+
+        if(startDate === null) {
+            console.error('Start date is null. Cannot save editor data.');
+            return Promise.reject(new Error('Start date is null.'));
+        }
 
         const userData: IPagePostAd = {
             ID: uniqueId,
             Description: editorData,
             IsHTML: false,
-            StartDate: new Date().toISOString(),
-            EndDate: new Date().toISOString(),
+            StartDate: startDate ? startDate.format('MM-DD-YYYY') : new Date().toISOString(),
+            EndDate: endDate ? endDate.format('MM-DD-YYYY') : new Date().toISOString(),
             ContactID: "",
             Entity: SHUL || "",
+            IsAuthenticated: true,
+            UserEmail: authenticationService.getEmail() || "",
         };
 
         let url = SERVER_URL + 'api/PostPageAd/PostAd';

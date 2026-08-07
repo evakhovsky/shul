@@ -94,7 +94,23 @@ class AuthenticationService implements IAuthenticationService {
         }
 
         return resultToken.FirstName;
-    }    
+    }
+
+    public getEmail = () : string => {
+        var token = localStorage.getItem('token');
+        if (!token) {
+            return '';
+        }
+
+        let resultToken : IToken = jwtDecode<IToken>(token);
+
+        if (!resultToken.Email) {
+            console.log("something is wrong with the token");
+            return '';
+        }
+
+        return resultToken.Email;
+    }
 
     public logout = () : void => {
         localStorage.removeItem('token');

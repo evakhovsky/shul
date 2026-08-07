@@ -6,11 +6,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import { postMainPageAdmin } from '../../shared/services/PostMainPageAdmin';
+import { postMainPageAdmin } from '../../shared/services/PostMainPageAdminService';
 
 export default function PostMainPage(){
   const editorData = useRef<string>("");
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
+  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [key] = useState(0);
 
   const handleEditorChange = (data: any) => {
@@ -19,25 +20,37 @@ export default function PostMainPage(){
 
   const handleSave = () => {
     console.log('Saving editor content:', editorData.current);
-    postMainPageAdmin.saveEditorData(editorData.current);
+    postMainPageAdmin.saveEditorData(editorData.current, startDate, endDate);
   };
 
-  const handleDateChange = (value: any, context: any) => {
+  const handleDateChange = (value: any, context: any, picker: 'start' | 'end') => {
     if (context?.validationError) {
       return;
     }
 
     if (value && typeof value.toDate === 'function') {
-      setStartDate(value);
+      if (picker === 'start') {
+        setStartDate(value);
+      } else {
+        setEndDate(value);
+      }
       return;
     }
 
     if (value instanceof Date) {
-      setStartDate(dayjs(value));
+      if (picker === 'start') {
+        setStartDate(dayjs(value));
+      } else {
+        setEndDate(dayjs(value));
+      }
       return;
     }
 
-    setStartDate(null);
+    if (picker === 'start') {
+      setStartDate(null);
+    } else {
+      setEndDate(null);
+    }
   };
 
   const renderBeginDate = () => {
@@ -55,7 +68,7 @@ export default function PostMainPage(){
           <DatePicker
             key={key}
             value={startDate}
-            onChange={handleDateChange as any}
+            onChange={(value, context) => handleDateChange(value, context, "start") as any}
             slotProps={{ textField: { fullWidth: true } }}
           />
         </View>
@@ -64,8 +77,8 @@ export default function PostMainPage(){
           <div style={{ marginBottom: 4, fontSize: 14, fontWeight: 500, textAlign: 'left' }}>End</div>
           <DatePicker
             key={key + 1}
-            value={startDate}
-            onChange={handleDateChange as any}
+            value={endDate}
+            onChange={(value, context) => handleDateChange(value, context, "end") as any}
             slotProps={{ textField: { fullWidth: true } }}
           />
         </View>

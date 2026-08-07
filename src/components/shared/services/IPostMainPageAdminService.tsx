@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface IPagePostAd {
     ID: string;
     Description: string;
@@ -21,6 +23,9 @@ export interface IPagePostAd {
     NumberOfImages?: number;
 }
 
-export interface IPostMainPageAdmin {
-    saveEditorData(editorData: string) : Promise<boolean>;
+export interface IPostMainPageAdminService {
+    saveEditorData(editorData: string,
+        startDate: Dayjs | null,
+        endDate: Dayjs | null
+    ) : Promise<boolean>;
 }
